@@ -5,6 +5,14 @@
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "a8c2e29a-5532-4681-a84b-f7b40be03623"
+      }
+    },
+    "plugins": [
+      "expo-font"
     ]
   }
 }
