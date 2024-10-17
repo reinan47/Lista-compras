@@ -18,7 +18,7 @@ const Footer = ({ total, items, flagMostrar, setModalApagaListaVisible, }) => (
                 <Text style={styles.textoTotalItens}>{Object.keys(items).length}</Text>
             </View>
             <View style={styles.viewTotalPagar}>
-                <Text style={{ paddingBottom: 5, fontSize: 22, fontFamily: 'Roboto_700Bold' }}>TOTAL A PAGAR</Text>
+                <Text style={{ paddingBottom: 5, fontSize: 20, fontFamily: 'Roboto_700Bold' }}>TOTAL A PAGAR</Text>
                 <Text style={[styles.textoTotalPagar, { color: total >= 600 ? '#E02426' : '#32cd32', }]}>R$ {total.toFixed(2).replace(".", ",")}</Text>
             </View>
             {flagMostrar && (
@@ -46,27 +46,27 @@ const Footer = ({ total, items, flagMostrar, setModalApagaListaVisible, }) => (
 const styles = StyleSheet.create({
     footer: {
         backgroundColor: '#E4EBEB',
-        paddingTop: 15,
-        paddingBottom: 10,
+        paddingTop: 10,
+        paddingBottom: 5,
         paddingHorizontal: 16,
     },
     viewTotalItens: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginBottom: 15,
+        marginBottom: 5,
         borderBottomWidth: 2,
         borderColor: 'white',
     },
     viewTotalPagar: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginBottom: 20,
+        marginBottom: 10,
         borderBottomWidth: 2,
         borderColor: 'white',
     },
     botaoClear: {
-        width: 150,
-        height: 38,
+        width: 120,
+        height: 30,
         backgroundColor: '#E02426',
         justifyContent: 'center',
         alignItems: 'center',
@@ -74,17 +74,17 @@ const styles = StyleSheet.create({
     },
     textoBotao: {
         color: 'white',
-        fontSize: 16,
+        fontSize: 14,
         fontFamily: 'Roboto_400Regular'
     },
     textoTotalItens: {
         paddingBottom: 5,
-        fontSize: 20,
+        fontSize: 18,
         fontFamily: 'Roboto_400Regular'
     },
     textoTotalPagar: {
         paddingBottom: 5,
-        fontSize: 22,
+        fontSize: 20,
         fontFamily: 'Roboto_700Bold'
     },
     shadow: {

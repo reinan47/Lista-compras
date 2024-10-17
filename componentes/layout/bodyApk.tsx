@@ -80,9 +80,9 @@ const ItensLista: React.FC<ItensListaProps> = ({
                   },
                 ]}
               >
-                <View style={{ flexDirection: 'row', backgroundColor: '#F2C939', borderTopLeftRadius: 15, borderTopRightRadius: 1, paddingTop: 3, height: 35, justifyContent: 'space-between' }}>
+                <View style={{ flexDirection: 'row', backgroundColor: '#F2C939', borderTopLeftRadius: 10, borderTopRightRadius: 1, paddingTop: 3, height: 22, justifyContent: 'space-between' }}>
                   <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                    <MaterialIcons name="shopping-cart" size={25} color='#807240' style={{ paddingLeft: 8 }} />
+                    <MaterialIcons name="shopping-cart" size={15} color='#807240' style={{ paddingLeft: 8 }} />
                     <Text style={[styles.textItem, { textAlignVertical: 'bottom', color: '#807240' }]}>  {itemData.name}</Text>
                   </View>
                   <ListaLocal
@@ -95,8 +95,8 @@ const ItensLista: React.FC<ItensListaProps> = ({
 
                 </View>
               </TouchableOpacity>
-              <View style={[styles.shadowBox, { backgroundColor: `${itemData.selected ? '#4de44d' : '#FCFCFC'}`, borderBottomRightRadius: 15 }]}>
-                <View style={[styles.row, { alignItems: 'center', paddingLeft: 10, height: 65 }]}>
+              <View style={[styles.shadowBox, { backgroundColor: `${itemData.selected ? '#4de44d' : '#FCFCFC'}`, borderBottomRightRadius: 10 }]}>
+                <View style={[styles.row, { alignItems: 'center', paddingLeft: 10, height: 40, paddingBottom: 5 }]}>
                   <View style={[styles.priceQuantity]}>
                     <TouchableOpacity onPress={() => { }}></TouchableOpacity>
                     <View>
@@ -113,7 +113,7 @@ const ItensLista: React.FC<ItensListaProps> = ({
                         >
                           <MaterialIcons name="remove" size={15} color="white" />
                         </TouchableOpacity>
-                        <View style={{ backgroundColor: '#D9D9D9', borderRadius: 5, height: 30 }}>
+                        <View style={{ backgroundColor: '#D9D9D9', borderRadius: 5, height: 20 }}>
                           <Text style={styles.TamFont}>    {itemData.quantity}    </Text>
                         </View>
                         <TouchableOpacity onPress={() => updateItem(itemId, itemData.price.toString(), itemData.quantity + 1)} style={styles.addIcon}>
@@ -121,11 +121,11 @@ const ItensLista: React.FC<ItensListaProps> = ({
                         </TouchableOpacity>
                       </View>
                     </View>
-                    <View style={{ width: '60%', alignItems: 'center', marginLeft: 15, flexDirection: 'row' }}>
+                    <View style={{ width: '60%', alignItems: 'center', marginLeft: 15, flexDirection: 'row', paddingLeft: 10 }}>
                       <View>
-                        <Text style={{ textAlign: 'center', marginLeft: 20, fontSize: 13, fontFamily: 'Roboto_400Regular' }}>Valor UN</Text>
+                        <Text style={{ textAlign: 'center', fontSize: 13, fontFamily: 'Roboto_400Regular' }}>Valor UN</Text>
                         <View style={{ flexDirection: 'row' }}>
-                          <Text style={{ fontSize: 22, fontFamily: 'Roboto_400Regular', textAlignVertical: 'center' }}>R$</Text>
+                          <Text style={{ fontSize: 17, fontFamily: 'Roboto_400Regular', textAlignVertical: 'center' }}>R$</Text>
                           <TextInput
                             keyboardType='decimal-pad'
                             placeholder={"0 R$"}
@@ -154,9 +154,9 @@ const ItensLista: React.FC<ItensListaProps> = ({
                           />
                         </View>
                       </View>
-                      <View style={{ marginLeft: 15 }}>
-                        <Text style={{ fontSize: 13, fontFamily: 'Roboto_400Regular' }}>Valor Total</Text>
-                        <Text style={[styles.textContent, { fontSize: 22 }]}>R$ {itemData.total.toFixed(2).replace(".", ",")}</Text>
+                      <View style={{ marginLeft: 15, paddingLeft: 20 }}>
+                        <Text style={{ fontSize: 12, textAlign: 'center', fontFamily: 'Roboto_400Regular' }}>Total</Text>
+                        <Text style={[styles.textContent, { fontSize: 17 }]}>R$ {itemData.total.toFixed(2).replace(".", ",")}</Text>
                       </View>
                     </View>
                   </View>
@@ -164,7 +164,7 @@ const ItensLista: React.FC<ItensListaProps> = ({
                     setSelectedItemId(itemId);
                     setModalApagaItemVisible(true);
                   }}>
-                    <MaterialIcons style={{ backgroundColor: 'transparent', paddingRight: 10 }} name="delete" size={33} color="#E02426" />
+                    <MaterialIcons style={{ backgroundColor: 'transparent', paddingRight: 10 }} name="delete" size={25} color="#E02426" />
                   </TouchableOpacity>
                 </View>
               </View>
@@ -255,9 +255,9 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 10,
   },
   textItem: {
-    fontSize: 20,
+    fontSize: 16,
     color: '#807240',
-    marginBottom: 8,
+    marginBottom: 2,
     fontFamily: 'Roboto_700Bold',
   },
   addIcon: {
@@ -266,8 +266,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 100,
     width: 22,
-    height: 22,
-    marginTop: 4,
+    height: 22
   },
   priceQuantity: {
     flexDirection: 'row',
@@ -279,19 +278,19 @@ const styles = StyleSheet.create({
   inputContent: {
     borderWidth: .8,
     borderColor: 'gray',
-    fontSize: 25,
+    fontSize: 17,
     textAlign: 'center',
-    width: '70%',
-    height: 30,
+    width: '67%',
+    height: 22,
     fontFamily: 'Roboto_400Regular',
-    borderRadius: 5
+    borderRadius: 3
   },
   textContent: {
     fontSize: 16,
     fontFamily: 'Roboto_400Regular',
   },
   TamFont: {
-    fontSize: 25,
+    fontSize: 17,
     fontFamily: 'Roboto_400Regular',
   },
   emptyListContainer: {

@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 
 import BodyApk from '../layout/bodyApk';
+import NotaCompras from '../layout/notaCompras';
 import FooterApk from '../layout/footerApk';
 import HeaderApk from '../layout/headerApk';
 import BotaoBar from '../componenteFooter/botaoBarTab';
@@ -155,8 +156,8 @@ export default function TabRoutes({
                     Nota das Compras
                 </Text>
               </View>
-              <View style={styles.body}>
-                <BodyApk
+              <View style={[styles.body, {backgroundColor: '#c4bbb5',}]}>
+                <NotaCompras
                   items={items}
                   toggleItemSelection={toggleItemSelection}
                   setCorView={setCorView}
@@ -190,7 +191,7 @@ const styles = StyleSheet.create({
   },
   titulo:{
     justifyContent: 'center',
-    paddingBottom: 20,
+    paddingBottom: 10,
     paddingTop: 20,
   },
 });
