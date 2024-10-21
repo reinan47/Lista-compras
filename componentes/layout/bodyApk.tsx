@@ -57,122 +57,172 @@ const ItensLista: React.FC<ItensListaProps> = ({
         <Icon name="frown-o" size={50} color="#E02426" />
       </View>
     ) : (
-      <FlatList
-        data={Object.entries(items)}
-        renderItem={({ item }) => {
-          const [itemId, itemData] = item;
-          return (
-            <View style={{ paddingBottom: 10 }}>
-              <TouchableOpacity
-                onPress={() => {
-                  toggleItemSelection(itemId);
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+      >
+        {Object.entries(items).map(([itemId, itemData]) => (
+          <View key={itemId} style={{ paddingBottom: 6 }}>
+            <TouchableOpacity
+              onPress={() => {
+                toggleItemSelection(itemId);
+              }}
+              onPressIn={() => {
+                itemData.selected ? setCorView(true) : setCorView(false);
+              }}
+              style={[
+                styles.itemContainer,
+                {
+                  borderRadius: 1,
+                  borderTopRightRadius: 0,
+                  borderTopLeftRadius: 0,
+                  borderBottomRightRadius: 8,
+                },
+              ]}
+            >
+              <View
+                style={{
+                  flexDirection: 'row',
+                  backgroundColor: '#F2C939',
+                  borderTopLeftRadius: 5,
+                  borderTopRightRadius: 1,
+                  paddingTop: 3,
+                  height: 22,
+                  justifyContent: 'space-between',
                 }}
-                onPressIn={() => {
-                  itemData.selected ? setCorView(true) : setCorView(false);
-                }}
+              >
+                <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                  <MaterialIcons name="shopping-cart" size={15} color='#807240' style={{ paddingLeft: 8 }} />
+                  <Text style={[styles.textItem, { textAlignVertical: 'bottom', color: '#807240' }]}> {itemData.name}</Text>
+                </View>
+                <ListaLocal
+                  setSelectedLocal={setSelectedLocal}
+                  setItems={setItems}
+                  items={items}
+                  itemId={itemId}
+                  itemData={itemData}
+                />
+              </View>
+            </TouchableOpacity>
+            <View
+              style={[
+                styles.shadowBox,
+                {
+                  backgroundColor: `${itemData.selected ? '#4de44d' : '#FCFCFC'}`,
+                  borderBottomRightRadius: 8,
+                },
+              ]}
+            >
+              <View
                 style={[
-                  styles.itemContainer,
-                  {
-                    borderRadius: 1,
-                    borderTopRightRadius: 0,
-                    borderTopLeftRadius: 0,
-                    borderBottomRightRadius: 15,
-                  },
+                  styles.row,
+                  { alignItems: 'center', paddingLeft: 10, height: 40, paddingBottom: 5 },
                 ]}
               >
-                <View style={{ flexDirection: 'row', backgroundColor: '#F2C939', borderTopLeftRadius: 10, borderTopRightRadius: 1, paddingTop: 3, height: 22, justifyContent: 'space-between' }}>
-                  <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                    <MaterialIcons name="shopping-cart" size={15} color='#807240' style={{ paddingLeft: 8 }} />
-                    <Text style={[styles.textItem, { textAlignVertical: 'bottom', color: '#807240' }]}>  {itemData.name}</Text>
+                <View style={[styles.priceQuantity]}>
+                  <TouchableOpacity onPress={() => { }}></TouchableOpacity>
+                  <View>
+                    <Text style={{ textAlign: 'center', fontSize: 13, fontFamily: 'Roboto_400Regular' }}>
+                      Unidades
+                    </Text>
+                    <View style={{ flexDirection: 'row' }}>
+                      <TouchableOpacity
+                        onPress={() => {
+                          if (itemData.quantity <= 0) {
+                            itemData.quantity = 1;
+                          }
+                          updateItem(itemId, itemData.price.toString(), itemData.quantity - 1);
+                        }}
+                        style={styles.addIcon}
+                      >
+                        <MaterialIcons name="remove" size={15} color="white" />
+                      </TouchableOpacity>
+                      <View style={{ backgroundColor: '#D9D9D9', borderRadius: 5, height: 20, width: 25, }}>
+                        <Text style={[styles.TamFont,{textAlign: 'center'}]}> {itemData.quantity} </Text>
+                      </View>
+                      <TouchableOpacity
+                        onPress={() => updateItem(itemId, itemData.price.toString(), itemData.quantity + 1)}
+                        style={styles.addIcon}
+                      >
+                        <MaterialIcons name="add" size={15} color="white" />
+                      </TouchableOpacity>
+                    </View>
                   </View>
-                  <ListaLocal
-                    setSelectedLocal={setSelectedLocal}
-                    setItems={setItems}
-                    items={items}
-                    itemId={itemId}
-                    itemData={itemData}
-                  />
-
-                </View>
-              </TouchableOpacity>
-              <View style={[styles.shadowBox, { backgroundColor: `${itemData.selected ? '#4de44d' : '#FCFCFC'}`, borderBottomRightRadius: 10 }]}>
-                <View style={[styles.row, { alignItems: 'center', paddingLeft: 10, height: 40, paddingBottom: 5 }]}>
-                  <View style={[styles.priceQuantity]}>
-                    <TouchableOpacity onPress={() => { }}></TouchableOpacity>
+                  <View style={{ width: '60%', alignItems: 'center', marginLeft: 15, flexDirection: 'row', paddingLeft: 10 }}>
                     <View>
-                      <Text style={{ textAlign: 'center', fontSize: 13, fontFamily: 'Roboto_400Regular' }}>Unidades</Text>
+                      <Text style={{ textAlign: 'center', fontSize: 13, fontFamily: 'Roboto_400Regular' }}>
+                        Valor UN
+                      </Text>
                       <View style={{ flexDirection: 'row' }}>
-                        <TouchableOpacity
-                          onPress={() => {
-                            if (itemData.quantity <= 0) {
-                              itemData.quantity = 1;
+                        <Text style={{ fontSize: 17, fontFamily: 'Roboto_400Regular', textAlignVertical: 'center' }}>
+                          R$
+                        </Text>
+                        <TextInput
+                          keyboardType='decimal-pad'
+                          placeholder={"0 R$"}
+                          value={
+                            valorInputs[itemId] != 0
+                              ? valorInputs[itemId] || itemData.price.toString().replace('.', ',')
+                              : null
+                          }
+                          onFocus={() =>
+                            setValorInputs({
+                              ...valorInputs,
+                              [itemId]: itemData.price.toString().replace('.', ','),
+                            })
+                          }
+                          onChangeText={(text) => {
+                            const startsWithDigit = /^\d/.test(text);
+
+                            if (startsWithDigit) {
+                              const formattedText = text.replace(
+                                /^(\d+)[^\d](\d{0,2}).*?(\.\d{1,2})?$/,
+                                '$1,$2$3'
+                              );
+                              setValorInputs({ ...valorInputs, [itemId]: formattedText });
+                              updateItem(itemId, formattedText, itemData.quantity);
+                            } else {
+                              const verificaVazio = /^$/.test(text);
+                              if (!verificaVazio) {
+                                setValorInputs({ ...valorInputs, [itemId]: '0,' });
+                                updateItem(itemId, '0,', itemData.quantity);
+                              } else {
+                                setValorInputs({ ...valorInputs, [itemId]: '' });
+                                updateItem(itemId, '', itemData.quantity);
+                              }
                             }
-                            updateItem(itemId, itemData.price.toString(), itemData.quantity - 1);
                           }}
-                          style={styles.addIcon}
-                        >
-                          <MaterialIcons name="remove" size={15} color="white" />
-                        </TouchableOpacity>
-                        <View style={{ backgroundColor: '#D9D9D9', borderRadius: 5, height: 20 }}>
-                          <Text style={styles.TamFont}>    {itemData.quantity}    </Text>
-                        </View>
-                        <TouchableOpacity onPress={() => updateItem(itemId, itemData.price.toString(), itemData.quantity + 1)} style={styles.addIcon}>
-                          <MaterialIcons name="add" size={15} color="white" />
-                        </TouchableOpacity>
+                          style={styles.inputContent}
+                        />
                       </View>
                     </View>
-                    <View style={{ width: '60%', alignItems: 'center', marginLeft: 15, flexDirection: 'row', paddingLeft: 10 }}>
-                      <View>
-                        <Text style={{ textAlign: 'center', fontSize: 13, fontFamily: 'Roboto_400Regular' }}>Valor UN</Text>
-                        <View style={{ flexDirection: 'row' }}>
-                          <Text style={{ fontSize: 17, fontFamily: 'Roboto_400Regular', textAlignVertical: 'center' }}>R$</Text>
-                          <TextInput
-                            keyboardType='decimal-pad'
-                            placeholder={"0 R$"}
-                            value={valorInputs[itemId] != 0 ? (valorInputs[itemId]) || itemData.price.toString().replace(".", ",") : null}
-                            onFocus={() => setValorInputs({ ...valorInputs, [itemId]: itemData.price.toString().replace(".", ",") })}
-                            onChangeText={text => {
-                              const startsWithDigit: boolean = /^\d/.test(text);
-
-                              if (startsWithDigit) {
-                                const formattedText: string = text.replace(/^(\d+)[^\d](\d{0,2}).*?(\.\d{1,2})?$/, '$1,$2$3');
-                                setValorInputs({ ...valorInputs, [itemId]: formattedText });
-                                updateItem(itemId, formattedText, itemData.quantity);
-                              } else {
-                                const verificaVazio: boolean = /^$/.test(text)
-                                if (!verificaVazio) {
-                                  setValorInputs({ ...valorInputs, [itemId]: '0,' });
-                                  updateItem(itemId, '0,', itemData.quantity);
-                                } else {
-                                  setValorInputs({ ...valorInputs, [itemId]: '' });
-                                  updateItem(itemId, '', itemData.quantity);
-                                }
-                              }
-
-                            }}
-                            style={styles.inputContent}
-                          />
-                        </View>
-                      </View>
-                      <View style={{ marginLeft: 15, paddingLeft: 20 }}>
-                        <Text style={{ fontSize: 12, textAlign: 'center', fontFamily: 'Roboto_400Regular' }}>Total</Text>
-                        <Text style={[styles.textContent, { fontSize: 17 }]}>R$ {itemData.total.toFixed(2).replace(".", ",")}</Text>
-                      </View>
+                    <View style={{ marginLeft: 15, paddingLeft: 20 }}>
+                      <Text style={{ fontSize: 12, textAlign: 'center', fontFamily: 'Roboto_400Regular' }}>
+                        Total
+                      </Text>
+                      <Text style={[styles.textContent, { fontSize: 17 }]}>
+                        R$ {itemData.total.toFixed(2).replace('.', ',')}
+                      </Text>
                     </View>
                   </View>
-                  <TouchableOpacity onPress={() => {
+                </View>
+                <TouchableOpacity
+                  onPress={() => {
                     setSelectedItemId(itemId);
                     setModalApagaItemVisible(true);
-                  }}>
-                    <MaterialIcons style={{ backgroundColor: 'transparent', paddingRight: 10 }} name="delete" size={25} color="#E02426" />
-                  </TouchableOpacity>
-                </View>
+                  }}
+                >
+                  <MaterialIcons
+                    style={{ backgroundColor: 'transparent', paddingRight: 10 }}
+                    name="delete"
+                    size={25}
+                    color="#E02426"
+                  />
+                </TouchableOpacity>
               </View>
             </View>
-          );
-        }}
-        keyExtractor={(item) => item[0]}
-      />
+          </View>
+        ))}
+      </ScrollView>
     )}
 
     {/* Modal de confirmação Limpar lista*/}
