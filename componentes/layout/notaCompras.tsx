@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, SafeAreaView, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 interface Item {
@@ -27,10 +27,12 @@ interface ItensListaProps {
     clearAllItems: () => void;
     selectedItemId: string;
     removeItem: () => void;
+    total: number;
 }
 
 const ItensLista: React.FC<ItensListaProps> = ({
     items,
+    total
 }) => {
     return (
         <View style={{ paddingHorizontal: 5, }}>
@@ -53,11 +55,19 @@ const ItensLista: React.FC<ItensListaProps> = ({
                     renderItem={({ item }) => {
                         const [itemId, itemData] = item;
                         return (
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                <Text style={[styles.textItem, styles.columnProduto, styles.font]}>{itemData.name}</Text>
-                                <Text style={[styles.textData, styles.columnUnd, styles.font]}>{itemData.quantity}x</Text>
-                                <Text style={[styles.textData, styles.columnValorUnd, styles.font]}>R$ {parseFloat(itemData.price.toString()).toFixed(2).replace('.', ',')}</Text>
-                                <Text style={[styles.textData, styles.columnTotal, styles.font]}>R$ {itemData.total.toFixed(2).replace('.', ',')}</Text>
+                            <View>
+                                <ScrollView
+                                    keyboardShouldPersistTaps="handled"
+                                >
+                                    <SafeAreaView>
+                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                            <Text style={[styles.textItem, styles.columnProduto, styles.font]}>{itemData.name}</Text>
+                                            <Text style={[styles.textData, styles.columnUnd, styles.font]}>{itemData.quantity}x</Text>
+                                            <Text style={[styles.textData, styles.columnValorUnd, styles.font]}>R$ {parseFloat(itemData.price.toString()).toFixed(2).replace('.', ',')}</Text>
+                                            <Text style={[styles.textData, styles.columnTotal, styles.font]}>R$ {itemData.total.toFixed(2).replace('.', ',')}</Text>
+                                        </View>
+                                    </SafeAreaView>
+                                </ScrollView>
                             </View>
                         );
                     }}
@@ -103,9 +113,9 @@ const styles = StyleSheet.create({
         alignContent: 'flex-end',
         fontSize: 30,
         alignItems: 'center',
-      },
-      emptyListText: {
+    },
+    emptyListText: {
         fontSize: 30,
         fontFamily: 'Roboto_400Regular',
-      },
+    },
 });

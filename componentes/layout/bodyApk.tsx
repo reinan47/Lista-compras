@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, Modal, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal, ScrollView } from 'react-native';
 
 import { MaterialIcons } from '@expo/vector-icons';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -26,6 +26,7 @@ interface ItensListaProps {
   setSelectedItemId: (itemId: string) => void;
   setModalApagaItemVisible: (visible: boolean) => void;
   modalApagaItemVisible: boolean;
+  setModalApagaListaVisible: (visible: boolean) => void;
   modalApagaListVisible: boolean;
   clearAllItems: () => void;
   selectedItemId: string;
@@ -45,12 +46,13 @@ const ItensLista: React.FC<ItensListaProps> = ({
   setSelectedItemId,
   setModalApagaItemVisible,
   modalApagaItemVisible,
+  setModalApagaListaVisible,
   modalApagaListVisible,
   clearAllItems,
   selectedItemId,
   removeItem,
 }) => (
-  <View style={{ paddingHorizontal: 16, maxHeight: 'auto' }}>
+  <View style={{ paddingHorizontal: 16, maxHeight: 'auto' ,bottom: 15}}>
     {Object.keys(items).length === 0 ? (
       <View style={styles.emptyListContainer}>
         <Text style={styles.emptyListText}>Sem Itens na Lista !</Text>
@@ -64,10 +66,14 @@ const ItensLista: React.FC<ItensListaProps> = ({
           <View key={itemId} style={{ paddingBottom: 6 }}>
             <TouchableOpacity
               onPress={() => {
-                toggleItemSelection(itemId);
+                if(itemData.quantity > 0 && parseFloat(itemData.price.toString()) > 0){
+                  toggleItemSelection(itemId);
+                }
               }}
               onPressIn={() => {
-                itemData.selected ? setCorView(true) : setCorView(false);
+                if(itemData.quantity > 0 && parseFloat(itemData.price.toString()) > 0){
+                  itemData.selected ? setCorView(true) : setCorView(false);
+                }
               }}
               style={[
                 styles.itemContainer,
@@ -107,7 +113,7 @@ const ItensLista: React.FC<ItensListaProps> = ({
               style={[
                 styles.shadowBox,
                 {
-                  backgroundColor: `${itemData.selected ? '#4de44d' : '#FCFCFC'}`,
+                  backgroundColor: itemData.quantity > 0 ? `${itemData.selected ? '#4de44d' : '#FCFCFC'}` : "#FCFCFC",
                   borderBottomRightRadius: 8,
                 },
               ]}
@@ -121,14 +127,17 @@ const ItensLista: React.FC<ItensListaProps> = ({
                 <View style={[styles.priceQuantity]}>
                   <TouchableOpacity onPress={() => { }}></TouchableOpacity>
                   <View>
-                    <Text style={{ textAlign: 'center', fontSize: 13, fontFamily: 'Roboto_400Regular' }}>
-                      Unidades
+                    <Text style={{ textAlign: 'center', fontSize: 12, fontFamily: 'Roboto_400Regular' }}>
+                      UND
                     </Text>
                     <View style={{ flexDirection: 'row' }}>
                       <TouchableOpacity
                         onPress={() => {
                           if (itemData.quantity <= 0) {
                             itemData.quantity = 1;
+                          }
+                          if(itemData.quantity == 1){
+                            itemData.selected = false;
                           }
                           updateItem(itemId, itemData.price.toString(), itemData.quantity - 1);
                         }}
@@ -147,24 +156,16 @@ const ItensLista: React.FC<ItensListaProps> = ({
                       </TouchableOpacity>
                     </View>
                   </View>
-                  <View style={{ width: '60%', alignItems: 'center', marginLeft: 15, flexDirection: 'row', paddingLeft: 10 }}>
+                  <View style={{ width: '60%', alignItems: 'center', left: 5, flexDirection: 'row', paddingLeft: 10 }}>
                     <View>
-                      <Text style={{ textAlign: 'center', fontSize: 13, fontFamily: 'Roboto_400Regular' }}>
-                        Valor UN
-                      </Text>
-                      <View style={{ flexDirection: 'row' }}>
+                      <View style={{ flexDirection: 'row', top: 3 }}>
                         <Text style={{ fontSize: 17, fontFamily: 'Roboto_400Regular', textAlignVertical: 'center' }}>
                           R$
                         </Text>
                         <TextInput
                           keyboardType='decimal-pad'
                           placeholder={"0 R$"}
-                          value={
-                            valorInputs[itemId] != 0
-                              ? valorInputs[itemId] || itemData.price.toString().replace('.', ',')
-                              : null
-                          }
-                          onFocus={() =>
+                          editable={itemData.selected ? false : true}                          onFocus={() =>
                             setValorInputs({
                               ...valorInputs,
                               [itemId]: itemData.price.toString().replace('.', ','),
@@ -195,11 +196,19 @@ const ItensLista: React.FC<ItensListaProps> = ({
                         />
                       </View>
                     </View>
-                    <View style={{ marginLeft: 15, paddingLeft: 20 }}>
-                      <Text style={{ fontSize: 12, textAlign: 'center', fontFamily: 'Roboto_400Regular' }}>
-                        Total
+                    <View style={{ left: 10 }}>
+                      <Text style={{ textAlign: 'center', fontSize: 12, fontFamily: 'Roboto_400Regular' }}>
+                        VALOR UND
                       </Text>
-                      <Text style={[styles.textContent, { fontSize: 17 }]}>
+                      <Text style={[styles.textContent, { fontSize: 15, textAlign: 'center' }]}>
+                        R$ {parseFloat(itemData.price.toString()).toFixed(2).replace('.', ',')}
+                      </Text>
+                    </View>
+                    <View style={{ left: 25 }}>
+                      <Text style={{ fontSize: 12, textAlign: 'center', fontFamily: 'Roboto_400Regular' }}>
+                        TOTAL
+                      </Text>
+                      <Text style={[styles.textContent, { fontSize: 15 }]}>
                         R$ {itemData.total.toFixed(2).replace('.', ',')}
                       </Text>
                     </View>
@@ -230,7 +239,7 @@ const ItensLista: React.FC<ItensListaProps> = ({
       animationType="slide"
       transparent={true}
       visible={modalApagaListVisible}
-      onRequestClose={() => setModalApagaItemVisible(false)}
+      onRequestClose={() => setModalApagaListaVisible(false)}
     >
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
@@ -240,7 +249,7 @@ const ItensLista: React.FC<ItensListaProps> = ({
           <View style={styles.modalButtons}>
             <TouchableOpacity
               style={[styles.modalButton, styles.cancelButton]}
-              onPress={() => setModalApagaItemVisible(false)}
+              onPress={() => setModalApagaListaVisible(false)}
             >
               <Text style={styles.buttonText}>Não</Text>
             </TouchableOpacity>

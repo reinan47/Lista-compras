@@ -108,6 +108,7 @@ export default function TabRoutes({
                   setSelectedItemId={setSelectedItemId}
                   setModalApagaItemVisible={setModalApagaItemVisible}
                   modalApagaItemVisible={modalApagaItemVisible}
+                  setModalApagaListaVisible={setModalApagaListaVisible}
                   modalApagaListVisible={modalApagaListVisible}
                   clearAllItems={clearAllItems}
                   selectedItemId={selectedItemId}
@@ -173,6 +174,7 @@ export default function TabRoutes({
                   clearAllItems={clearAllItems}
                   selectedItemId={selectedItemId}
                   removeItem={removeItem}
+                  total={total}
                 />
               </View>
             </SafeAreaView>

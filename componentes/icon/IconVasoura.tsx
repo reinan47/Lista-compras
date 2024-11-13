@@ -8,7 +8,7 @@ const IconVasoura = () => (
 );
 
 const IconDetalheBotao = () => (
-  <Svg style={{ alignSelf: 'flex-end', right: 3 }} height={11} width={10}>
+  <Svg style={{ alignSelf: 'flex-end', right: 3 }} height={10} width={10}>
     <Path d="M4.25 1.5H0.5V0.25H4.25V1.5ZM6.75 6.5H3V5.25H6.75V6.5ZM5.5 4H1.75V2.75H5.5V4Z" fill="#E4F0F0" />
   </Svg>
 );

@@ -17,8 +17,12 @@ const Footer = ({ total, items, flagMostrar, setModalApagaListaVisible, }) => (
                 <Text style={styles.textoTotalItens}>TOTAL DE ITENS</Text>
                 <Text style={styles.textoTotalItens}>{Object.keys(items).length}</Text>
             </View>
-            <View style={styles.viewTotalPagar}>
-                <Text style={{ paddingBottom: 5, fontSize: 20, fontFamily: 'Roboto_700Bold' }}>TOTAL A PAGAR</Text>
+            <View style={styles.viewTotalItens}>
+                <Text style={styles.textoTotalItens}>TOTAL DE COMPRADOS</Text>
+                <Text style={styles.textoTotalItens}>{Object.keys(items).length}</Text>
+            </View>
+            <View style={[styles.viewTotalPagar, {borderBottomWidth: flagMostrar ? 2 : 0,}]}>
+                <Text style={{ paddingBottom: 0, fontSize: 16, fontFamily: 'Roboto_700Bold' }}>TOTAL A PAGAR</Text>
                 <Text style={[styles.textoTotalPagar, { color: total >= 600 ? '#E02426' : '#32cd32', }]}>R$ {total.toFixed(2).replace(".", ",")}</Text>
             </View>
             {flagMostrar && (
@@ -46,7 +50,7 @@ const Footer = ({ total, items, flagMostrar, setModalApagaListaVisible, }) => (
 const styles = StyleSheet.create({
     footer: {
         backgroundColor: '#E4EBEB',
-        paddingTop: 10,
+        paddingTop: 6,
         paddingBottom: 5,
         paddingHorizontal: 16,
     },
@@ -61,7 +65,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginBottom: 10,
-        borderBottomWidth: 2,
         borderColor: 'white',
     },
     botaoClear: {
@@ -74,17 +77,16 @@ const styles = StyleSheet.create({
     },
     textoBotao: {
         color: 'white',
+        top: 2,
         fontSize: 14,
         fontFamily: 'Roboto_400Regular'
     },
     textoTotalItens: {
-        paddingBottom: 5,
-        fontSize: 18,
+        fontSize: 15,
         fontFamily: 'Roboto_400Regular'
     },
     textoTotalPagar: {
-        paddingBottom: 5,
-        fontSize: 20,
+        fontSize: 16,
         fontFamily: 'Roboto_700Bold'
     },
     shadow: {
