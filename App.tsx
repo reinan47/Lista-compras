@@ -141,7 +141,8 @@ const App = () => {
     setModalApagaListaVisible(false);
   };
   const updateItem = (itemId, price, quantity) => {
-    price = price.replace(",", ".");
+    price = price.replace(/\./g, '').replace(',', '.');
+
     const updatedItems = { ...items };
     updatedItems[itemId] = {
       ...updatedItems[itemId],

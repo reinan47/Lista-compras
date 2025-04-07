@@ -2,6 +2,13 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 
+const formatar = (value) => {
+  return value.toLocaleString('pt-BR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })
+}
+
 const MyComponent = ({ total }) => {
   return (
     <View style={styles.container}>
@@ -12,7 +19,7 @@ const MyComponent = ({ total }) => {
           
         </Text>
         <Text style={{ color: '#fff', fontFamily: 'Roboto_700Bold', fontSize: 13, }}>
-        R$ {(total.toFixed(2) - total.toFixed(0)) == 0 ? total.toFixed(0) : total.toFixed(2)}
+        R$ {formatar(total)}
         </Text>
       </View>
       <View style={styles.iconContainer}>

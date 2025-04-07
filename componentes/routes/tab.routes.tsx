@@ -72,7 +72,7 @@ export default function TabRoutes({
         name="Adicionar Lista"
         options={{
           headerShown: false,
-          tabBarIcon: () => <BotaoBar total={total}/>,
+          tabBarIcon: () => <BotaoBar total={total} />,
           tabBarStyle: {
             paddingTop: 5,
             paddingBottom: 5
@@ -126,7 +126,27 @@ export default function TabRoutes({
           </>
         )}
       </Tab.Screen>
-
+      <Tab.Screen
+        options={{
+          headerShown: false,
+          tabBarIcon: () => <MaterialIcons name="playlist-remove" size={24} color="black" />,
+          tabBarStyle: {
+            paddingTop: 5,
+            paddingBottom: 5,
+          },
+          tabBarLabelStyle: {
+            fontFamily: 'Roboto_700Bold',
+            fontSize: 14
+          },
+          tabBarActiveTintColor: 'black',
+          tabBarInactiveTintColor: 'gray',
+        }}
+        name="Itens Restante"
+      >
+        {() => (
+          <>
+          </>)}
+      </Tab.Screen>
       <Tab.Screen
         options={{
           headerShown: false,
@@ -135,7 +155,7 @@ export default function TabRoutes({
             paddingTop: 5,
             paddingBottom: 5,
           },
-          tabBarLabelStyle:{
+          tabBarLabelStyle: {
             fontFamily: 'Roboto_700Bold',
             fontSize: 14
           },
@@ -143,7 +163,6 @@ export default function TabRoutes({
           tabBarInactiveTintColor: 'gray',
         }}
         name="Lista Completa"
-
       >
         {() => (
           <>
@@ -154,10 +173,10 @@ export default function TabRoutes({
                   fontFamily: 'Roboto_700Bold',
                   fontSize: 30
                 }}>
-                    Nota das Compras
+                  Nota das Compras
                 </Text>
               </View>
-              <View style={[styles.body, {backgroundColor: '#c4bbb5',}]}>
+              <View style={[styles.body, { backgroundColor: '#c4bbb5', }]}>
                 <NotaCompras
                   items={items}
                   toggleItemSelection={toggleItemSelection}
@@ -191,7 +210,7 @@ const styles = StyleSheet.create({
   body: {
     flex: 1,
   },
-  titulo:{
+  titulo: {
     justifyContent: 'center',
     paddingBottom: 10,
     paddingTop: 20,

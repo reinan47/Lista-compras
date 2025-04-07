@@ -19,11 +19,15 @@ const Footer = ({ total, items, flagMostrar, setModalApagaListaVisible, }) => (
             </View>
             <View style={styles.viewTotalItens}>
                 <Text style={styles.textoTotalItens}>TOTAL DE COMPRADOS</Text>
-                <Text style={styles.textoTotalItens}>{Object.keys(items).length}</Text>
+                <Text style={styles.textoTotalItens}>{Object.values(items).filter((item) => (item as { selected: boolean }).selected).length}</Text>
             </View>
-            <View style={[styles.viewTotalPagar, {borderBottomWidth: flagMostrar ? 2 : 0,}]}>
+            <View style={[styles.viewTotalPagar, { borderBottomWidth: flagMostrar ? 2 : 0, }]}>
                 <Text style={{ paddingBottom: 0, fontSize: 16, fontFamily: 'Roboto_700Bold' }}>TOTAL A PAGAR</Text>
-                <Text style={[styles.textoTotalPagar, { color: total >= 600 ? '#E02426' : '#32cd32', }]}>R$ {total.toFixed(2).replace(".", ",")}</Text>
+                <Text style={[styles.textoTotalPagar, { color: total >= 600 ? '#E02426' : '#32cd32', }]}>
+                    R$ {total.toLocaleString('pt-BR', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    })}</Text>
             </View>
             {flagMostrar && (
                 <View style={{ paddingBottom: 5, }}>

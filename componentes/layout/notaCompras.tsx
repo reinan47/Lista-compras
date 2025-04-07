@@ -10,6 +10,12 @@ interface Item {
     selected: boolean;
     local: string;
 }
+const formatar = (value) => {
+    return value.toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+};
 
 interface ItensListaProps {
     items: { [key: string]: Item };
@@ -55,21 +61,24 @@ const ItensLista: React.FC<ItensListaProps> = ({
                     renderItem={({ item }) => {
                         const [itemId, itemData] = item;
                         return (
-                            <View>
-                                <ScrollView
-                                    keyboardShouldPersistTaps="handled"
-                                >
-                                    <SafeAreaView>
-                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                            <Text style={[styles.textItem, styles.columnProduto, styles.font]}>{itemData.name}</Text>
-                                            <Text style={[styles.textData, styles.columnUnd, styles.font]}>{itemData.quantity}x</Text>
-                                            <Text style={[styles.textData, styles.columnValorUnd, styles.font]}>R$ {parseFloat(itemData.price.toString()).toFixed(2).replace('.', ',')}</Text>
-                                            <Text style={[styles.textData, styles.columnTotal, styles.font]}>R$ {itemData.total.toFixed(2).replace('.', ',')}</Text>
-                                        </View>
-                                    </SafeAreaView>
-                                </ScrollView>
-                            </View>
+                            itemData.selected ?
+                                <View>
+                                    <ScrollView
+                                        keyboardShouldPersistTaps="handled"
+                                    >
+                                        <SafeAreaView>
+                                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                                <Text style={[styles.textItem, styles.columnProduto, styles.font]}>{itemData.name}</Text>
+                                                <Text style={[styles.textData, styles.columnUnd, styles.font]}>{itemData.quantity}x</Text>
+                                                <Text style={[styles.textData, styles.columnValorUnd, styles.font]}>R$ {formatar(itemData.price)}</Text>
+                                                <Text style={[styles.textData, styles.columnTotal, styles.font]}>R$ {formatar(itemData.total)}</Text>
+                                            </View>
+                                        </SafeAreaView>
+                                    </ScrollView>
+                                </View>
+                            : null
                         );
+
                     }}
                     keyExtractor={(item) => item[0]}
                     style={{ top: 10 }}

@@ -1,9 +1,32 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal, ScrollView } from 'react-native';
 
 import { MaterialIcons } from '@expo/vector-icons';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ListaLocal from '../componenteBody/listaLocal'
+
+  const formatarNumero = (value) => {
+    let numStr = value.toString().replace(/\D/g, '');
+  
+    if (numStr === '') return '';
+  
+    let inteiro = numStr.slice(0, -2);
+    let centavos = numStr.slice(-2);
+  
+    if (inteiro === '') inteiro = '0';
+  
+    inteiro = parseInt(inteiro).toLocaleString('pt-BR');
+    if(inteiro === '0' && centavos === '0') return `${'0'},${'00'}`
+  
+    return `${inteiro},${centavos}`;
+  };
+
+  const formatar = (value) => {
+    return value.toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  };
 
 interface Item {
   name: string;
@@ -33,7 +56,7 @@ interface ItensListaProps {
   removeItem: () => void;
 }
 
-
+ 
 const ItensLista: React.FC<ItensListaProps> = ({
   items,
   toggleItemSelection,
@@ -142,6 +165,7 @@ const ItensLista: React.FC<ItensListaProps> = ({
                           updateItem(itemId, itemData.price.toString(), itemData.quantity - 1);
                         }}
                         style={styles.addIcon}
+                        disabled={itemData.selected}
                       >
                         <MaterialIcons name="remove" size={15} color="white" />
                       </TouchableOpacity>
@@ -151,12 +175,13 @@ const ItensLista: React.FC<ItensListaProps> = ({
                       <TouchableOpacity
                         onPress={() => updateItem(itemId, itemData.price.toString(), itemData.quantity + 1)}
                         style={styles.addIcon}
+                        disabled={itemData.selected}
                       >
                         <MaterialIcons name="add" size={15} color="white" />
                       </TouchableOpacity>
                     </View>
                   </View>
-                  <View style={{ width: '60%', alignItems: 'center', left: 5, flexDirection: 'row', paddingLeft: 10 }}>
+                  <View style={{ width: '50%', alignItems: 'center', left: 5, flexDirection: 'row', paddingLeft: 10 }}>
                     <View>
                       <View style={{ flexDirection: 'row', top: 3 }}>
                         <Text style={{ fontSize: 17, fontFamily: 'Roboto_400Regular', textAlignVertical: 'center' }}>
@@ -164,34 +189,19 @@ const ItensLista: React.FC<ItensListaProps> = ({
                         </Text>
                         <TextInput
                           keyboardType='decimal-pad'
-                          placeholder={"0 R$"}
-                          editable={itemData.selected ? false : true}                          onFocus={() =>
-                            setValorInputs({
-                              ...valorInputs,
-                              [itemId]: itemData.price.toString().replace('.', ','),
-                            })
+                          placeholder={"0,00"}
+                          editable={itemData.selected ? false : true}                          
+                          onFocus={() =>
+                            setValorInputs({ ...valorInputs, [itemId]: "0,00" })                        
                           }
-                          onChangeText={(text) => {
-                            const startsWithDigit = /^\d/.test(text);
+                          value={valorInputs[itemId]}
 
-                            if (startsWithDigit) {
-                              const formattedText = text.replace(
-                                /^(\d+)[^\d](\d{0,2}).*?(\.\d{1,2})?$/,
-                                '$1,$2$3'
-                              );
-                              setValorInputs({ ...valorInputs, [itemId]: formattedText });
-                              updateItem(itemId, formattedText, itemData.quantity);
-                            } else {
-                              const verificaVazio = /^$/.test(text);
-                              if (!verificaVazio) {
-                                setValorInputs({ ...valorInputs, [itemId]: '0,' });
-                                updateItem(itemId, '0,', itemData.quantity);
-                              } else {
-                                setValorInputs({ ...valorInputs, [itemId]: '' });
-                                updateItem(itemId, '', itemData.quantity);
-                              }
+                          onChangeText={(text) => {
+                              text = formatarNumero(text.toString())
+                              setValorInputs({ ...valorInputs, [itemId]: text });
+                              updateItem(itemId, text, itemData.quantity);
                             }
-                          }}
+                          }
                           style={styles.inputContent}
                         />
                       </View>
@@ -201,7 +211,7 @@ const ItensLista: React.FC<ItensListaProps> = ({
                         VALOR UND
                       </Text>
                       <Text style={[styles.textContent, { fontSize: 15, textAlign: 'center' }]}>
-                        R$ {parseFloat(itemData.price.toString()).toFixed(2).replace('.', ',')}
+                        R$ {formatar(itemData.price)}
                       </Text>
                     </View>
                     <View style={{ left: 25 }}>
@@ -209,7 +219,7 @@ const ItensLista: React.FC<ItensListaProps> = ({
                         TOTAL
                       </Text>
                       <Text style={[styles.textContent, { fontSize: 15 }]}>
-                        R$ {itemData.total.toFixed(2).replace('.', ',')}
+                        R$ {formatar(itemData.total)}
                       </Text>
                     </View>
                   </View>
@@ -221,7 +231,7 @@ const ItensLista: React.FC<ItensListaProps> = ({
                   }}
                 >
                   <MaterialIcons
-                    style={{ backgroundColor: 'transparent', paddingRight: 10 }}
+                    style={{ backgroundColor: 'transparent', paddingRight: 5 }}
                     name="delete"
                     size={25}
                     color="#E02426"
