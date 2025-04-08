@@ -1,32 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal, ScrollView, TouchableWithoutFeedback } from 'react-native';
 
 import { MaterialIcons } from '@expo/vector-icons';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ListaLocal from '../componenteBody/listaLocal'
 
-  const formatarNumero = (value) => {
-    let numStr = value.toString().replace(/\D/g, '');
-  
-    if (numStr === '') return '';
-  
-    let inteiro = numStr.slice(0, -2);
-    let centavos = numStr.slice(-2);
-  
-    if (inteiro === '') inteiro = '0';
-  
-    inteiro = parseInt(inteiro).toLocaleString('pt-BR');
-    if(inteiro === '0' && centavos === '0') return `${'0'},${'00'}`
-  
-    return `${inteiro},${centavos}`;
-  };
+const formatarNumero = (value) => {
+  if (!value) return '0,00';
+  let numStr = value.toString().replace(/\D/g, '');
 
-  const formatar = (value) => {
-    return value.toLocaleString('pt-BR', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    });
-  };
+  while (numStr.length < 3) {
+    numStr = '0' + numStr;
+  }
+
+  const inteiro = numStr.slice(0, -2);
+  const centavos = numStr.slice(-2);
+
+  return `${parseInt(inteiro).toLocaleString('pt-BR')},${centavos}`;
+};
+
+const formatar = (value) => {
+  return Number(value.toString().replace(',', '.')).toLocaleString('pt-BR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+};
 
 interface Item {
   name: string;
@@ -54,9 +52,14 @@ interface ItensListaProps {
   clearAllItems: () => void;
   selectedItemId: string;
   removeItem: () => void;
+  zeroAllItems: () => void;
+  setModalZerarListaVisible: (visible: boolean) => void;
+  modalZerarListVisible: boolean;
+  setValorChange: (change: string) => void;
+  valorChange: string;
 }
 
- 
+
 const ItensLista: React.FC<ItensListaProps> = ({
   items,
   toggleItemSelection,
@@ -74,8 +77,13 @@ const ItensLista: React.FC<ItensListaProps> = ({
   clearAllItems,
   selectedItemId,
   removeItem,
+  zeroAllItems,
+  setModalZerarListaVisible,
+  modalZerarListVisible,
+  setValorChange,
+  valorChange
 }) => (
-  <View style={{ paddingHorizontal: 16, maxHeight: 'auto' ,bottom: 15}}>
+  <View style={{ paddingHorizontal: 16, maxHeight: 'auto', bottom: 15 }}>
     {Object.keys(items).length === 0 ? (
       <View style={styles.emptyListContainer}>
         <Text style={styles.emptyListText}>Sem Itens na Lista !</Text>
@@ -89,22 +97,19 @@ const ItensLista: React.FC<ItensListaProps> = ({
           <View key={itemId} style={{ paddingBottom: 6 }}>
             <TouchableOpacity
               onPress={() => {
-                if(itemData.quantity > 0 && parseFloat(itemData.price.toString()) > 0){
+                if (itemData.quantity > 0 && parseFloat(itemData.price.toString()) > 0) {
                   toggleItemSelection(itemId);
                 }
               }}
               onPressIn={() => {
-                if(itemData.quantity > 0 && parseFloat(itemData.price.toString()) > 0){
+                if (itemData.quantity > 0 && parseFloat(itemData.price.toString()) > 0) {
                   itemData.selected ? setCorView(true) : setCorView(false);
                 }
               }}
               style={[
                 styles.itemContainer,
                 {
-                  borderRadius: 1,
-                  borderTopRightRadius: 0,
-                  borderTopLeftRadius: 0,
-                  borderBottomRightRadius: 8,
+                  borderRadius: 1
                 },
               ]}
             >
@@ -112,14 +117,14 @@ const ItensLista: React.FC<ItensListaProps> = ({
                 style={{
                   flexDirection: 'row',
                   backgroundColor: '#F2C939',
-                  borderTopLeftRadius: 5,
-                  borderTopRightRadius: 1,
+                  borderTopLeftRadius: 2,
+                  borderTopRightRadius: 2,
                   paddingTop: 3,
                   height: 22,
                   justifyContent: 'space-between',
                 }}
               >
-                <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'center', }}>
                   <MaterialIcons name="shopping-cart" size={15} color='#807240' style={{ paddingLeft: 8 }} />
                   <Text style={[styles.textItem, { textAlignVertical: 'bottom', color: '#807240' }]}> {itemData.name}</Text>
                 </View>
@@ -136,11 +141,27 @@ const ItensLista: React.FC<ItensListaProps> = ({
               style={[
                 styles.shadowBox,
                 {
-                  backgroundColor: itemData.quantity > 0 ? `${itemData.selected ? '#4de44d' : '#FCFCFC'}` : "#FCFCFC",
-                  borderBottomRightRadius: 8,
+                  backgroundColor: "#FCFCFC",
+                  borderBottomRightRadius: 2,
+                  borderBottomLeftRadius: 2,
                 },
               ]}
             >
+              <View
+                style={{
+                  backgroundColor: itemData.quantity > 0 ? `${itemData.selected ? '#32CD32' : '#FCFCFC'}` : "#FCFCFC",
+                  position: 'absolute',
+                  width: 16,
+                  height: "100%",
+                  top: 0,
+                  left: 0,
+                  zIndex: 1,
+                  borderBottomLeftRadius: 100,
+                  borderBottomRightRadius: 100,
+                }}
+              >
+
+              </View>
               <View
                 style={[
                   styles.row,
@@ -159,10 +180,10 @@ const ItensLista: React.FC<ItensListaProps> = ({
                           if (itemData.quantity <= 0) {
                             itemData.quantity = 1;
                           }
-                          if(itemData.quantity == 1){
+                          if (itemData.quantity == 1) {
                             itemData.selected = false;
                           }
-                          updateItem(itemId, itemData.price.toString(), itemData.quantity - 1);
+                          updateItem(itemId, valorChange, itemData.quantity - 1);
                         }}
                         style={styles.addIcon}
                         disabled={itemData.selected}
@@ -170,10 +191,10 @@ const ItensLista: React.FC<ItensListaProps> = ({
                         <MaterialIcons name="remove" size={15} color="white" />
                       </TouchableOpacity>
                       <View style={{ backgroundColor: '#D9D9D9', borderRadius: 5, height: 20, width: 25, }}>
-                        <Text style={[styles.TamFont,{textAlign: 'center'}]}> {itemData.quantity} </Text>
+                        <Text style={[styles.TamFont, { textAlign: 'center' }]}> {itemData.quantity} </Text>
                       </View>
                       <TouchableOpacity
-                        onPress={() => updateItem(itemId, itemData.price.toString(), itemData.quantity + 1)}
+                        onPress={() => updateItem(itemId, valorChange, itemData.quantity + 1)}
                         style={styles.addIcon}
                         disabled={itemData.selected}
                       >
@@ -190,17 +211,21 @@ const ItensLista: React.FC<ItensListaProps> = ({
                         <TextInput
                           keyboardType='decimal-pad'
                           placeholder={"0,00"}
-                          editable={itemData.selected ? false : true}                          
+                          editable={itemData.selected ? false : true}
                           onFocus={() =>
-                            setValorInputs({ ...valorInputs, [itemId]: "0,00" })                        
+                            setValorInputs({ ...valorInputs, [itemId]: "0,00" })
                           }
+                          selection={{
+                            start: (valorInputs[itemId] || "").length,
+                            end: (valorInputs[itemId] || "").length,
+                          }}
                           value={valorInputs[itemId]}
-
                           onChangeText={(text) => {
-                              text = formatarNumero(text.toString())
-                              setValorInputs({ ...valorInputs, [itemId]: text });
-                              updateItem(itemId, text, itemData.quantity);
-                            }
+                            setValorChange(text)
+                            text = formatarNumero(text.toString())
+                            setValorInputs({ ...valorInputs, [itemId]: text });
+                            updateItem(itemId, text, itemData.quantity);
+                          }
                           }
                           style={styles.inputContent}
                         />
@@ -229,6 +254,7 @@ const ItensLista: React.FC<ItensListaProps> = ({
                     setSelectedItemId(itemId);
                     setModalApagaItemVisible(true);
                   }}
+                  disabled={itemData.selected}
                 >
                   <MaterialIcons
                     style={{ backgroundColor: 'transparent', paddingRight: 5 }}
@@ -251,27 +277,31 @@ const ItensLista: React.FC<ItensListaProps> = ({
       visible={modalApagaListVisible}
       onRequestClose={() => setModalApagaListaVisible(false)}
     >
-      <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          <Text style={styles.modalText}>
-            Excluir Todos Itens da Lista?
-          </Text>
-          <View style={styles.modalButtons}>
-            <TouchableOpacity
-              style={[styles.modalButton, styles.cancelButton]}
-              onPress={() => setModalApagaListaVisible(false)}
-            >
-              <Text style={styles.buttonText}>Não</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.modalButton, styles.deleteButton]}
-              onPress={clearAllItems}
-            >
-              <Text style={styles.buttonText}>Sim</Text>
-            </TouchableOpacity>
-          </View>
+      <TouchableWithoutFeedback onPress={() => setModalApagaListaVisible(false)}>
+        <View style={styles.centeredView}>
+          <TouchableWithoutFeedback onPress={() => { }}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>
+                Apagar Todos Itens da Lista?
+              </Text>
+              <View style={styles.modalButtons}>
+                <TouchableOpacity
+                  style={[styles.modalButton, styles.cancelButton]}
+                  onPress={() => setModalApagaListaVisible(false)}
+                >
+                  <Text style={styles.buttonText}>Não</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.modalButton, styles.deleteButton]}
+                  onPress={clearAllItems}
+                >
+                  <Text style={styles.buttonText}>Sim</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
         </View>
-      </View>
+      </TouchableWithoutFeedback>
     </Modal>
 
     {/* Modal de confirmação remover item*/}
@@ -281,31 +311,68 @@ const ItensLista: React.FC<ItensListaProps> = ({
       visible={modalApagaItemVisible}
       onRequestClose={() => setModalApagaItemVisible(false)}
     >
-      <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          <Text style={styles.modalText}>
-            Excluir
-            <Text style={{ fontFamily: 'Roboto_400Regular', fontSize: 20 }}>
-              <Text style={{ color: '#E02426', fontFamily: 'Roboto_400Regular' }}> {items[selectedItemId]?.name} </Text>
-            </Text>
-            da Lista?
-          </Text>
-          <View style={styles.modalButtons}>
-            <TouchableOpacity
-              style={[styles.modalButton, styles.cancelButton]}
-              onPress={() => setModalApagaItemVisible(false)}
-            >
-              <Text style={styles.buttonText}>Não</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.modalButton, styles.deleteButton]}
-              onPress={removeItem}
-            >
-              <Text style={styles.buttonText}>Sim</Text>
-            </TouchableOpacity>
-          </View>
+      <TouchableWithoutFeedback onPress={() => setModalApagaItemVisible(false)}>
+        <View style={styles.centeredView}>
+          <TouchableWithoutFeedback onPress={() => { }}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>
+                Apagar
+                <Text style={{ fontFamily: 'Roboto_400Regular', fontSize: 20 }}>
+                  <Text style={{ color: '#E02426', fontFamily: 'Roboto_400Regular' }}> {items[selectedItemId]?.name} </Text>
+                </Text>
+                da Lista?
+              </Text>
+              <View style={styles.modalButtons}>
+                <TouchableOpacity
+                  style={[styles.modalButton, styles.cancelButton]}
+                  onPress={() => setModalApagaItemVisible(false)}
+                >
+                  <Text style={styles.buttonText}>Não</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.modalButton, styles.deleteButton]}
+                  onPress={removeItem}
+                >
+                  <Text style={styles.buttonText}>Sim</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
         </View>
-      </View>
+      </TouchableWithoutFeedback>
+    </Modal>
+
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={modalZerarListVisible}
+      onRequestClose={() => setModalZerarListaVisible(false)}
+    >
+      <TouchableWithoutFeedback onPress={() => setModalZerarListaVisible(false)}>
+        <View style={styles.centeredView}>
+          <TouchableWithoutFeedback onPress={() => { }}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>
+                Zerar os Preços de Todos Itens da Lista?
+              </Text>
+              <View style={styles.modalButtons}>
+                <TouchableOpacity
+                  style={[styles.modalButton, styles.cancelButton]}
+                  onPress={() => setModalZerarListaVisible(false)}
+                >
+                  <Text style={styles.buttonText}>Não</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.modalButton, styles.deleteButton]}
+                  onPress={zeroAllItems}
+                >
+                  <Text style={styles.buttonText}>Sim</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </View>
+      </TouchableWithoutFeedback>
     </Modal>
   </View>
 );
@@ -383,7 +450,7 @@ const styles = StyleSheet.create({
   modalView: {
     margin: 20,
     backgroundColor: 'white',
-    borderRadius: 20,
+    borderRadius: 5,
     padding: 35,
     alignItems: 'center',
     shadowColor: '#000',
@@ -394,6 +461,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+    height: '18%'
+
   },
   modalText: {
     marginBottom: 15,

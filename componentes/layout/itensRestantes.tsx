@@ -44,7 +44,7 @@ const ItensLista: React.FC<ItensListaProps> = ({
         <View style={{ paddingHorizontal: 5, }}>
             {Object.keys(items).length === 0 ? (
                 <View style={styles.emptyListContainer}>
-                    <Text style={styles.emptyListText}>Sem Nota das Compras</Text>
+                    <Text style={styles.emptyListText}>Sem Itens Restantes</Text>
                     <Text style={styles.emptyListText}>Lista Vazia!</Text>
                     <Icon name="frown-o" size={50} color="#E02426" />
                 </View>
@@ -62,7 +62,7 @@ const ItensLista: React.FC<ItensListaProps> = ({
                     renderItem={({ item }) => {
                         const [itemId, itemData] = item;
                         return (
-                            itemData.selected ?
+                            !itemData.selected ?
                                 <View>
                                     <ScrollView
                                         keyboardShouldPersistTaps="handled"

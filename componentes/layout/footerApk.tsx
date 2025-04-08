@@ -4,8 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import { IconVasoura, IconDetalheBotao } from '../icon/IconVasoura';
 
-
-const Footer = ({ total, items, flagMostrar, setModalApagaListaVisible, }) => (
+const Footer = ({ total, items, flagMostrar, setModalApagaListaVisible, setModalZerarListaVisible }) => (
 
     <View>
         <LinearGradient
@@ -18,7 +17,7 @@ const Footer = ({ total, items, flagMostrar, setModalApagaListaVisible, }) => (
                 <Text style={styles.textoTotalItens}>{Object.keys(items).length}</Text>
             </View>
             <View style={styles.viewTotalItens}>
-                <Text style={styles.textoTotalItens}>TOTAL DE COMPRADOS</Text>
+                <Text style={styles.textoTotalItens}>TOTAL DE ITENS COMPRADOS</Text>
                 <Text style={styles.textoTotalItens}>{Object.values(items).filter((item) => (item as { selected: boolean }).selected).length}</Text>
             </View>
             <View style={[styles.viewTotalPagar, { borderBottomWidth: flagMostrar ? 2 : 0, }]}>
@@ -30,7 +29,7 @@ const Footer = ({ total, items, flagMostrar, setModalApagaListaVisible, }) => (
                     })}</Text>
             </View>
             {flagMostrar && (
-                <View style={{ paddingBottom: 5, }}>
+                <View style={{ paddingBottom: 5, flexDirection: 'row', justifyContent: 'space-between' }}>
                     <TouchableOpacity
                         style={styles.botaoClear}
                         onPress={() => {
@@ -43,6 +42,17 @@ const Footer = ({ total, items, flagMostrar, setModalApagaListaVisible, }) => (
                                 <IconDetalheBotao />
                             </View>
                             <Text style={styles.textoBotao}>  LIMPAR LISTA</Text>
+                        </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={styles.botaoZerar}
+                        onPress={() => {
+                            setModalZerarListaVisible(true);
+                        }}
+                    >
+                        <View style={{ flexDirection: 'row' }}>
+                            <Text style={[styles.textoBotao, {top: 0}]}>  ZERAR  </Text>
                         </View>
                     </TouchableOpacity>
                 </View>
@@ -96,6 +106,14 @@ const styles = StyleSheet.create({
     shadow: {
         height: 7,
     },
+    botaoZerar: {
+        width: 70,
+        height: 30,
+        backgroundColor: '#E02426',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 12,
+    }, 
 });
 
 export default Footer;

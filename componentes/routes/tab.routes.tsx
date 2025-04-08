@@ -7,6 +7,7 @@ import NotaCompras from '../layout/notaCompras';
 import FooterApk from '../layout/footerApk';
 import HeaderApk from '../layout/headerApk';
 import BotaoBar from '../componenteFooter/botaoBarTab';
+import ItensRestantes from '../layout/itensRestantes';
 
 const Tab = createBottomTabNavigator();
 
@@ -41,6 +42,11 @@ interface TabRoutesProps {
   itemName;
   setItemName;
   addItem;
+  zeroAllItems;
+  modalZerarListVisible;
+  setModalZerarListaVisible;
+  setValorChange;
+  valorChange;
 }
 
 export default function TabRoutes({
@@ -65,6 +71,11 @@ export default function TabRoutes({
   itemName,
   setItemName,
   addItem,
+  zeroAllItems,
+  modalZerarListVisible,
+  setModalZerarListaVisible,
+  setValorChange,
+  valorChange
 }: TabRoutesProps) {
   return (
     <Tab.Navigator>
@@ -113,6 +124,11 @@ export default function TabRoutes({
                   clearAllItems={clearAllItems}
                   selectedItemId={selectedItemId}
                   removeItem={removeItem}
+                  zeroAllItems={zeroAllItems}
+                  setModalZerarListaVisible={setModalZerarListaVisible}
+                  modalZerarListVisible={modalZerarListVisible}
+                  setValorChange={setValorChange}
+                  valorChange={valorChange}
                 />
               </View>
               <FooterApk
@@ -120,9 +136,9 @@ export default function TabRoutes({
                 items={items}
                 flagMostrar={flagMostrar}
                 setModalApagaListaVisible={setModalApagaListaVisible}
+                setModalZerarListaVisible={setModalZerarListaVisible}
               />
             </SafeAreaView>
-
           </>
         )}
       </Tab.Screen>
@@ -145,6 +161,62 @@ export default function TabRoutes({
       >
         {() => (
           <>
+            <SafeAreaView style={styles.container}>
+              <View style={styles.titulo}>
+                <Text style={{
+                  textAlign: 'center',
+                  fontFamily: 'Roboto_700Bold',
+                  fontSize: 30
+                }}>
+                  Itens Restantes
+                </Text>
+              </View>
+              <View style={[styles.body, { backgroundColor: '#c4bbb5', }]}>
+                <ItensRestantes
+                  items={items}
+                  toggleItemSelection={toggleItemSelection}
+                  setCorView={setCorView}
+                  setSelectedLocal={setSelectedLocal}
+                  setItems={setItems}
+                  updateItem={updateItem}
+                  setValorInputs={setValorInputs}
+                  valorInputs={valorInputs}
+                  setSelectedItemId={setSelectedItemId}
+                  setModalApagaItemVisible={setModalApagaItemVisible}
+                  modalApagaItemVisible={modalApagaItemVisible}
+                  modalApagaListVisible={modalApagaListVisible}
+                  clearAllItems={clearAllItems}
+                  selectedItemId={selectedItemId}
+                  removeItem={removeItem}
+                  total={total}
+                />
+              </View>
+              <View style={{
+                height: 40,
+                width: '100%',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+                paddingRight: 10,
+              }}>
+                <Text style={[styles.TamFont, { fontFamily: 'Roboto_700Bold', }]}>
+                  TOTAL :       R$
+                  {
+                    Object.values(items).reduce((acc, item) => {
+                      const total = typeof item.total === 'string'
+                        ? parseFloat(item.total)
+                        : item.total;
+                      if (!item.selected)
+                        acc = acc + (isNaN(total) ? 0 : total);
+                      return acc;
+                    }, 0).toLocaleString('pt-BR', {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2
+                    })
+                  }
+                </Text>
+              </View>
+            </SafeAreaView>
           </>)}
       </Tab.Screen>
       <Tab.Screen
@@ -196,6 +268,31 @@ export default function TabRoutes({
                   total={total}
                 />
               </View>
+              <View style={{
+                height: 40,
+                width: '100%',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+                paddingRight: 10,
+              }}>
+                <Text style={[styles.TamFont, { fontFamily: 'Roboto_700Bold', }]}>
+                  TOTAL :       R$
+                  {
+                    Object.values(items).reduce((acc, item) => {
+                      const total = typeof item.total === 'string'
+                        ? parseFloat(item.total)
+                        : item.total;
+                      if (item.selected)
+                        acc = acc + (isNaN(total) ? 0 : total);
+                      return acc;
+                    }, 0).toLocaleString('pt-BR', {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2
+                    })
+                  }
+                </Text>
+              </View>
             </SafeAreaView>
           </>
         )}
@@ -214,5 +311,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingBottom: 10,
     paddingTop: 20,
+  },
+  TamFont: {
+    fontSize: 17,
+    fontFamily: 'Roboto_400Regular',
   },
 });

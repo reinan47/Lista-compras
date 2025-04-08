@@ -24,12 +24,15 @@ const App = () => {
   const [safeAreaHeight, setSafeAreaHeight] = useState<number>(0);
   const [modalApagaItemVisible, setModalApagaItemVisible] = useState<boolean>(false);
   const [modalApagaListVisible, setModalApagaListaVisible] = useState<boolean>(false);
+  const [modalZerarListVisible, setModalZerarListaVisible] = useState<boolean>(false);
   const [flagMostrar, setMostrarBotaoLimpar] = useState<boolean>(true);
   const [selectedItemId, setSelectedItemId] = useState<string>('');
   const [valorInputs, setValorInputs] = useState<{ [key: string]: string }>({});
   const [corView, setCorView] = useState<boolean>(false);
   const [selectedLocal, setSelectedLocal] = useState<string>('Açai');
   const [totalAcai, setTotalAcai] = useState<number>(0);
+  const [valorChange, setValorChange] = useState<string>('');
+
 
   useEffect(() => {
     const tamanhoLista = Object.keys(items).length;
@@ -45,6 +48,7 @@ const App = () => {
         // Substituir ponto por vírgula nos preços e garantir que seja uma string
         const itemsWithCommaPrices = Object.keys(parsedItems).reduce((acc, key) => {
           const item = parsedItems[key];
+          console.log(item.price)
           acc[key] = {
             ...item,
             price: item.price.toString().replace('.', ','),
@@ -140,9 +144,33 @@ const App = () => {
     setItems({});
     setModalApagaListaVisible(false);
   };
+  const zeroAllItems = () => {
+    const itensZerados = Object.fromEntries(
+      Object.entries(items).map(([key, item]) => [
+        key,
+        { ...item, price: 0, total: 0 }
+      ])
+    );
+  
+    setItems(itensZerados);    
+    setModalZerarListaVisible(false);
+  };
+  const formatarNumero = (value) => {
+    if (!value) return '0,00';
+    let numStr = value.toString().replace(/\D/g, '');
+  
+    while (numStr.length < 3) {
+      numStr = '0' + numStr;
+    }
+  
+    const inteiro = numStr.slice(0, -2);
+    const centavos = numStr.slice(-2);
+  
+    return `${parseInt(inteiro).toLocaleString('pt-BR')},${centavos}`;
+  };
   const updateItem = (itemId, price, quantity) => {
+    price = formatarNumero(price);
     price = price.replace(/\./g, '').replace(',', '.');
-
     const updatedItems = { ...items };
     updatedItems[itemId] = {
       ...updatedItems[itemId],
@@ -196,6 +224,11 @@ const App = () => {
             itemName={itemName}
             setItemName={setItemName}
             addItem={addItem}
+            zeroAllItems={zeroAllItems}
+            setModalZerarListaVisible={setModalZerarListaVisible}
+            modalZerarListVisible={modalZerarListVisible}
+            setValorChange={setValorChange}
+            valorChange={valorChange}
           />
         </NavigationContainer>
       </View>
