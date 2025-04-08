@@ -30,9 +30,8 @@ const App = () => {
   const [valorInputs, setValorInputs] = useState<{ [key: string]: string }>({});
   const [corView, setCorView] = useState<boolean>(false);
   const [selectedLocal, setSelectedLocal] = useState<string>('Açai');
-  const [totalAcai, setTotalAcai] = useState<number>(0);
   const [valorChange, setValorChange] = useState<string>('');
-
+  const [modalLocalVisible, setModalLocalVisible] = useState(false);
 
   useEffect(() => {
     const tamanhoLista = Object.keys(items).length;
@@ -48,7 +47,6 @@ const App = () => {
         // Substituir ponto por vírgula nos preços e garantir que seja uma string
         const itemsWithCommaPrices = Object.keys(parsedItems).reduce((acc, key) => {
           const item = parsedItems[key];
-          console.log(item.price)
           acc[key] = {
             ...item,
             price: item.price.toString().replace('.', ','),
@@ -127,7 +125,7 @@ const App = () => {
         quantity: 0,
         total: 0,
         selected: false,
-        local: ''
+        local: 'Sem Local'
       };
       setItems({ ...items, [newItemId]: newItem });
       setItemName('');
@@ -148,7 +146,7 @@ const App = () => {
     const itensZerados = Object.fromEntries(
       Object.entries(items).map(([key, item]) => [
         key,
-        { ...item, price: 0, total: 0 }
+        { ...item, price: 0, total: 0, selected: false}
       ])
     );
   
@@ -229,6 +227,8 @@ const App = () => {
             modalZerarListVisible={modalZerarListVisible}
             setValorChange={setValorChange}
             valorChange={valorChange}
+            modalLocalVisible={modalLocalVisible}
+            setModalLocalVisible={setModalLocalVisible}
           />
         </NavigationContainer>
       </View>

@@ -57,6 +57,8 @@ interface ItensListaProps {
   modalZerarListVisible: boolean;
   setValorChange: (change: string) => void;
   valorChange: string;
+  modalLocalVisible: boolean;
+  setModalLocalVisible: (visible: boolean) => void;
 }
 
 
@@ -81,7 +83,9 @@ const ItensLista: React.FC<ItensListaProps> = ({
   setModalZerarListaVisible,
   modalZerarListVisible,
   setValorChange,
-  valorChange
+  valorChange,
+  modalLocalVisible,
+  setModalLocalVisible
 }) => (
   <View style={{ paddingHorizontal: 16, maxHeight: 'auto', bottom: 15 }}>
     {Object.keys(items).length === 0 ? (
@@ -124,17 +128,34 @@ const ItensLista: React.FC<ItensListaProps> = ({
                   justifyContent: 'space-between',
                 }}
               >
-                <View style={{ flexDirection: 'row', justifyContent: 'center', }}>
-                  <MaterialIcons name="shopping-cart" size={15} color='#807240' style={{ paddingLeft: 8 }} />
-                  <Text style={[styles.textItem, { textAlignVertical: 'bottom', color: '#807240' }]}> {itemData.name}</Text>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', maxWidth: 150 }}>
+                      <MaterialIcons name="shopping-cart" size={15} color='#807240' style={{ paddingLeft: 8 }} />
+                      <Text style={[styles.textItem, { color: '#807240', marginLeft: 4 }]} numberOfLines={1}>
+                        {itemData?.name || 'Sem nome'}
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setSelectedItemId(itemId);
+                        setModalLocalVisible(true);
+                      }}
+                    >
+                      <View style={{ width: 150, height: 30, flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={[styles.textItem, { color: '#807240' }]}>{itemData.local}</Text>
+                        <MaterialIcons
+                          name='arrow-drop-down'
+                          size={20} 
+                          color={'#807240'}
+                          />
+                      </View>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-                <ListaLocal
-                  setSelectedLocal={setSelectedLocal}
-                  setItems={setItems}
-                  items={items}
-                  itemId={itemId}
-                  itemData={itemData}
-                />
               </View>
             </TouchableOpacity>
             <View
@@ -374,6 +395,41 @@ const ItensLista: React.FC<ItensListaProps> = ({
         </View>
       </TouchableWithoutFeedback>
     </Modal>
+
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={modalLocalVisible}
+      onRequestClose={() => setModalLocalVisible(false)}
+    >
+      <TouchableWithoutFeedback onPress={() => setModalLocalVisible(false)}>
+        <View style={styles.centeredView}>
+          <TouchableWithoutFeedback onPress={() => { }}>
+            <View style={styles.modalViewLocal}>
+
+              {['Açai', 'Daniel Peixoto', 'GBarbosa', 'Messias Peixoto', 'Nunes Peixoto', 'Comercial Peixoto', 'Atacadão'].map((local) => (
+                <TouchableOpacity
+                  key={local}
+                  style={styles.modalButtonLocal}
+                  onPress={() => {
+                    const updatedItems = { ...items };
+                    updatedItems[selectedItemId] = {
+                      ...updatedItems[selectedItemId],
+                      local: local,
+                    };
+
+                    setItems(updatedItems);
+                    setModalLocalVisible(false);
+                  }}
+                >
+                  <Text style={styles.modalButtonText}>{local}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </TouchableWithoutFeedback>
+        </View>
+      </TouchableWithoutFeedback>
+    </Modal>
   </View>
 );
 
@@ -416,8 +472,8 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     fontSize: 17,
     textAlign: 'center',
-    width: '67%',
-    height: 22,
+    width: '75%',
+    height: 23,
     fontFamily: 'Roboto_400Regular',
     borderRadius: 3
   },
@@ -447,6 +503,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 22,
   },
+  modalButtonLocal: {
+    padding: 10,
+    width: 150,
+    alignItems: 'center',
+  },
   modalView: {
     margin: 20,
     backgroundColor: 'white',
@@ -469,6 +530,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'Roboto_400Regular',
     fontSize: 18,
+  },
+  modalButtonText: {
+    fontSize: 16,
+    fontFamily: 'Roboto_400Regular',
   },
   modalButtons: {
     flexDirection: 'row',
@@ -496,5 +561,17 @@ const styles = StyleSheet.create({
   shadowBox: {
     shadowColor: 'black',
     elevation: 3.5,
+  },
+  modalViewLocal: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 5,
+    padding: 30,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
 });

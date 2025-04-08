@@ -47,6 +47,8 @@ interface TabRoutesProps {
   setModalZerarListaVisible;
   setValorChange;
   valorChange;
+  modalLocalVisible;
+  setModalLocalVisible;
 }
 
 export default function TabRoutes({
@@ -75,7 +77,9 @@ export default function TabRoutes({
   modalZerarListVisible,
   setModalZerarListaVisible,
   setValorChange,
-  valorChange
+  valorChange,
+  modalLocalVisible,
+  setModalLocalVisible
 }: TabRoutesProps) {
   return (
     <Tab.Navigator>
@@ -129,6 +133,8 @@ export default function TabRoutes({
                   modalZerarListVisible={modalZerarListVisible}
                   setValorChange={setValorChange}
                   valorChange={valorChange}
+                  modalLocalVisible={modalLocalVisible}
+                  setModalLocalVisible={setModalLocalVisible}
                 />
               </View>
               <FooterApk
