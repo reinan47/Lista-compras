@@ -32,6 +32,7 @@ const App = () => {
   const [selectedLocal, setSelectedLocal] = useState<string>('Açai');
   const [valorChange, setValorChange] = useState<string>('');
   const [modalLocalVisible, setModalLocalVisible] = useState(false);
+  const [mostrarFiltros, setMostrarFiltros] = useState(false);
 
   useEffect(() => {
     const tamanhoLista = Object.keys(items).length;
@@ -67,36 +68,86 @@ const App = () => {
   }, []);
 
 
-  useEffect(() => {
-    // Função para ordenar os itens por nome
-    const sortItemsByName = (): { [key: string]: Item } => {
-      const sortedItemsArray: Item[] = Object.values(items).sort((a, b) => {
-        const nameA = a.name.toUpperCase();
-        const nameB = b.name.toUpperCase();
-        if (nameA < nameB) {
-          return -1;
-        }
-        if (nameA > nameB) {
-          return 1;
-        }
-        return 0;
-      });
-
-      const sortedItems: { [key: string]: Item } = {};
-      sortedItemsArray.forEach((item, index) => {
-        const key = Object.keys(items)[index];
-        sortedItems[key] = item;
-      });
-
-      return sortedItems;
-    };
-
-    const updatedItems = sortItemsByName();
-    if (JSON.stringify(updatedItems) !== JSON.stringify(items)) {
-      setItems(updatedItems);
+  const ordenarItensPorNome = () => {
+    const sortedItemsArray: Item[] = Object.values(items).sort((a, b) => {
+      const nameA = a.name.toUpperCase();
+      const nameB = b.name.toUpperCase();
+      if (nameA < nameB) return -1;
+      if (nameA > nameB) return 1;
+      return 0;
+    });
+  
+    const sortedItems: { [key: string]: Item } = {};
+    sortedItemsArray.forEach((item, index) => {
+      const key = Object.keys(items)[index]; // cuidado com consistência das chaves
+      sortedItems[key] = item;
+    });
+  
+    if (JSON.stringify(sortedItems) !== JSON.stringify(items)) {
+      setItems(sortedItems);
     }
-  }, [items]);
+  };  
 
+  const ordenarItensPorPrecoDesc = () => {
+    const sortedEntries = Object.entries(items).sort(([, a], [, b]) => {
+      return Number(b.price) - Number(a.price);
+    });
+  
+    const sortedItems = sortedEntries.reduce((acc, [key, item]) => {
+      acc[key] = item;
+      return acc;
+    }, {} as { [key: string]: Item });
+  
+    setItems(sortedItems);
+  };  
+
+  const ordenarItensPorPrecoAsc = () => {
+    const sortedEntries = Object.entries(items).sort(([, a], [, b]) => {
+      return Number(a.price) - Number(b.price);
+    });
+  
+    const sortedItems = sortedEntries.reduce((acc, [key, item]) => {
+      acc[key] = item;
+      return acc;
+    }, {} as { [key: string]: Item });
+  
+    setItems(sortedItems);
+  };  
+  const ordenarSelecionadosPorPrecoAsc = () => {
+    const selectedEntries = Object.entries(items)
+      .filter(([, item]) => item.selected)
+      .sort(([, a], [, b]) => Number(a.total) - Number(b.total));
+  
+    const unselectedEntries = Object.entries(items)
+      .filter(([, item]) => !item.selected);
+  
+    const combinedEntries = [...selectedEntries, ...unselectedEntries];
+  
+    const reorderedItems = combinedEntries.reduce((acc, [key, item]) => {
+      acc[key] = item;
+      return acc;
+    }, {} as { [key: string]: Item });
+  
+    setItems(reorderedItems);
+  };
+
+  const ordenarNaoSelecionadosPorPrecoAsc = () => {
+    const unselectedEntries = Object.entries(items)
+      .filter(([, item]) => !item.selected)
+      .sort(([, a], [, b]) => Number(a.total) - Number(b.total)); // não selecionados ordenados
+  
+    const selectedEntries = Object.entries(items)
+      .filter(([, item]) => item.selected); // selecionados mantêm ordem atual
+  
+    const combinedEntries = [...unselectedEntries, ...selectedEntries];
+  
+    const reorderedItems = combinedEntries.reduce((acc, [key, item]) => {
+      acc[key] = item;
+      return acc;
+    }, {} as { [key: string]: Item });
+  
+    setItems(reorderedItems);
+  };  
 
   useEffect(() => {
     // Calcular o total sempre que houver mudanças nos itens
@@ -229,6 +280,13 @@ const App = () => {
             valorChange={valorChange}
             modalLocalVisible={modalLocalVisible}
             setModalLocalVisible={setModalLocalVisible}
+            mostrarFiltros={mostrarFiltros}
+            setMostrarFiltros={setMostrarFiltros}
+            ordenarItensPorNome={ordenarItensPorNome}
+            ordenarItensPorPrecoDesc={ordenarItensPorPrecoDesc}
+            ordenarItensPorPrecoAsc={ordenarItensPorPrecoAsc}
+            ordenarSelecionadosPorPrecoAsc={ordenarSelecionadosPorPrecoAsc}
+            ordenarNaoSelecionadosPorPrecoAsc={ordenarNaoSelecionadosPorPrecoAsc}
           />
         </NavigationContainer>
       </View>

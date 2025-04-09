@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal, ScrollView, TouchableWithoutFeedback } from 'react-native';
 
 import { MaterialIcons } from '@expo/vector-icons';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import ListaLocal from '../componenteBody/listaLocal'
 
 const formatarNumero = (value) => {
   if (!value) return '0,00';
@@ -87,7 +86,7 @@ const ItensLista: React.FC<ItensListaProps> = ({
   modalLocalVisible,
   setModalLocalVisible
 }) => (
-  <View style={{ paddingHorizontal: 16, maxHeight: 'auto', bottom: 15 }}>
+  <View style={{ paddingHorizontal: 16, maxHeight: 'auto', bottom: 0 }}>
     {Object.keys(items).length === 0 ? (
       <View style={styles.emptyListContainer}>
         <Text style={styles.emptyListText}>Sem Itens na Lista !</Text>
@@ -98,7 +97,7 @@ const ItensLista: React.FC<ItensListaProps> = ({
         keyboardShouldPersistTaps="handled"
       >
         {Object.entries(items).map(([itemId, itemData]) => (
-          <View key={itemId} style={{ paddingBottom: 6 }}>
+          <View key={itemId} style={{ paddingBottom: 4 }}>
             <TouchableOpacity
               onPress={() => {
                 if (itemData.quantity > 0 && parseFloat(itemData.price.toString()) > 0) {
@@ -149,9 +148,9 @@ const ItensLista: React.FC<ItensListaProps> = ({
                         <Text style={[styles.textItem, { color: '#807240' }]}>{itemData.local}</Text>
                         <MaterialIcons
                           name='arrow-drop-down'
-                          size={20} 
+                          size={20}
                           color={'#807240'}
-                          />
+                        />
                       </View>
                     </TouchableOpacity>
                   </View>
@@ -204,7 +203,11 @@ const ItensLista: React.FC<ItensListaProps> = ({
                           if (itemData.quantity == 1) {
                             itemData.selected = false;
                           }
-                          updateItem(itemId, valorChange, itemData.quantity - 1);
+                          console.log(valorChange)
+                          if (itemData.price === 0)
+                            updateItem(itemId, '', itemData.quantity - 1);
+                          else
+                            updateItem(itemId, valorChange, itemData.quantity - 1);
                         }}
                         style={styles.addIcon}
                         disabled={itemData.selected}
@@ -215,7 +218,12 @@ const ItensLista: React.FC<ItensListaProps> = ({
                         <Text style={[styles.TamFont, { textAlign: 'center' }]}> {itemData.quantity} </Text>
                       </View>
                       <TouchableOpacity
-                        onPress={() => updateItem(itemId, valorChange, itemData.quantity + 1)}
+                        onPress={() => {
+                          if (itemData.price === 0)
+                            updateItem(itemId, '', itemData.quantity + 1)
+                          else
+                            updateItem(itemId, valorChange, itemData.quantity + 1)
+                        }}
                         style={styles.addIcon}
                         disabled={itemData.selected}
                       >

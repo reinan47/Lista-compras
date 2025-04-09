@@ -49,6 +49,13 @@ interface TabRoutesProps {
   valorChange;
   modalLocalVisible;
   setModalLocalVisible;
+  setMostrarFiltros;
+  mostrarFiltros,
+  ordenarItensPorNome,
+  ordenarItensPorPrecoDesc,
+  ordenarItensPorPrecoAsc,
+  ordenarSelecionadosPorPrecoAsc,
+  ordenarNaoSelecionadosPorPrecoAsc
 }
 
 export default function TabRoutes({
@@ -79,7 +86,14 @@ export default function TabRoutes({
   setValorChange,
   valorChange,
   modalLocalVisible,
-  setModalLocalVisible
+  setModalLocalVisible,
+  mostrarFiltros,
+  setMostrarFiltros,
+  ordenarItensPorNome,
+  ordenarItensPorPrecoDesc,
+  ordenarItensPorPrecoAsc,
+  ordenarSelecionadosPorPrecoAsc,
+  ordenarNaoSelecionadosPorPrecoAsc
 }: TabRoutesProps) {
   return (
     <Tab.Navigator>
@@ -109,6 +123,13 @@ export default function TabRoutes({
                 setItemName={setItemName}
                 addItem={addItem}
                 total={total}
+                setMostrarFiltros={setMostrarFiltros}
+                mostrarFiltros={mostrarFiltros}
+                ordenarItensPorNome={ordenarItensPorNome}
+                ordenarItensPorPrecoDesc={ordenarItensPorPrecoDesc}
+                ordenarItensPorPrecoAsc={ordenarItensPorPrecoAsc}
+                ordenarSelecionadosPorPrecoAsc={ordenarSelecionadosPorPrecoAsc}
+                ordenarNaoSelecionadosPorPrecoAsc={ordenarNaoSelecionadosPorPrecoAsc}
               />
               <View style={styles.body}>
                 <BodyApk
