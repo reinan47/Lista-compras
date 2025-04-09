@@ -69,7 +69,7 @@ const App = () => {
 
 
   const ordenarItensPorNome = () => {
-    const sortedItemsArray: Item[] = Object.values(items).sort((a, b) => {
+    const sortedEntries = Object.entries(items).sort(([, a], [, b]) => {
       const nameA = a.name.toUpperCase();
       const nameB = b.name.toUpperCase();
       if (nameA < nameB) return -1;
@@ -77,11 +77,10 @@ const App = () => {
       return 0;
     });
   
-    const sortedItems: { [key: string]: Item } = {};
-    sortedItemsArray.forEach((item, index) => {
-      const key = Object.keys(items)[index]; // cuidado com consistência das chaves
-      sortedItems[key] = item;
-    });
+    const sortedItems = sortedEntries.reduce((acc, [key, item]) => {
+      acc[key] = item;
+      return acc;
+    }, {} as { [key: string]: Item });
   
     if (JSON.stringify(sortedItems) !== JSON.stringify(items)) {
       setItems(sortedItems);

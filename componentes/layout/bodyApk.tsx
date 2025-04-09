@@ -203,7 +203,6 @@ const ItensLista: React.FC<ItensListaProps> = ({
                           if (itemData.quantity == 1) {
                             itemData.selected = false;
                           }
-                          console.log(valorChange)
                           if (itemData.price === 0)
                             updateItem(itemId, '', itemData.quantity - 1);
                           else
@@ -415,7 +414,7 @@ const ItensLista: React.FC<ItensListaProps> = ({
           <TouchableWithoutFeedback onPress={() => { }}>
             <View style={styles.modalViewLocal}>
 
-              {['Açai', 'Daniel Peixoto', 'GBarbosa', 'Messias Peixoto', 'Nunes Peixoto', 'Comercial Peixoto', 'Atacadão'].map((local) => (
+              {['Açai', 'Atacadão', 'Comercial Peixoto', 'Daniel Peixoto', 'GBarbosa', 'Messias Peixoto', 'Nunes Peixoto'].map((local) => (
                 <TouchableOpacity
                   key={local}
                   style={styles.modalButtonLocal}
@@ -540,8 +539,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   modalButtonText: {
-    fontSize: 16,
+    fontSize: 18,
     fontFamily: 'Roboto_400Regular',
+    borderWidth: .5,
+    width: '100%',
+    textAlign: 'center',
+    height: 30,
+    textAlignVertical: 'center',
+    borderRadius: 3
   },
   modalButtons: {
     flexDirection: 'row',
@@ -574,7 +579,7 @@ const styles = StyleSheet.create({
     margin: 20,
     backgroundColor: 'white',
     borderRadius: 5,
-    padding: 30,
+    padding: 50,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
