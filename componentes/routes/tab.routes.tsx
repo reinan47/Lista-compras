@@ -50,12 +50,10 @@ interface TabRoutesProps {
   modalLocalVisible;
   setModalLocalVisible;
   setMostrarFiltros;
-  mostrarFiltros,
-  ordenarItensPorNome,
-  ordenarItensPorPrecoDesc,
-  ordenarItensPorPrecoAsc,
-  ordenarSelecionadosPorPrecoAsc,
-  ordenarNaoSelecionadosPorPrecoAsc
+  mostrarFiltros;
+  filtroAtivo;
+  setFiltroAtivo;
+  getItensFiltradosEOrdenados;
 }
 
 export default function TabRoutes({
@@ -89,11 +87,9 @@ export default function TabRoutes({
   setModalLocalVisible,
   mostrarFiltros,
   setMostrarFiltros,
-  ordenarItensPorNome,
-  ordenarItensPorPrecoDesc,
-  ordenarItensPorPrecoAsc,
-  ordenarSelecionadosPorPrecoAsc,
-  ordenarNaoSelecionadosPorPrecoAsc
+  filtroAtivo,
+  setFiltroAtivo,
+  getItensFiltradosEOrdenados,
 }: TabRoutesProps) {
   return (
     <Tab.Navigator>
@@ -125,18 +121,14 @@ export default function TabRoutes({
                 total={total}
                 setMostrarFiltros={setMostrarFiltros}
                 mostrarFiltros={mostrarFiltros}
-                ordenarItensPorNome={ordenarItensPorNome}
-                ordenarItensPorPrecoDesc={ordenarItensPorPrecoDesc}
-                ordenarItensPorPrecoAsc={ordenarItensPorPrecoAsc}
-                ordenarSelecionadosPorPrecoAsc={ordenarSelecionadosPorPrecoAsc}
-                ordenarNaoSelecionadosPorPrecoAsc={ordenarNaoSelecionadosPorPrecoAsc}
+                filtroAtivo={filtroAtivo}
+                setFiltroAtivo={setFiltroAtivo}
               />
               <View style={styles.body}>
                 <BodyApk
                   items={items}
                   toggleItemSelection={toggleItemSelection}
                   setCorView={setCorView}
-                  setSelectedLocal={setSelectedLocal}
                   setItems={setItems}
                   updateItem={updateItem}
                   setValorInputs={setValorInputs}
@@ -156,6 +148,7 @@ export default function TabRoutes({
                   valorChange={valorChange}
                   modalLocalVisible={modalLocalVisible}
                   setModalLocalVisible={setModalLocalVisible}
+                  getItensFiltradosEOrdenados={getItensFiltradosEOrdenados}
                 />
               </View>
               <FooterApk
@@ -184,7 +177,7 @@ export default function TabRoutes({
           tabBarActiveTintColor: 'black',
           tabBarInactiveTintColor: 'gray',
         }}
-        name="Itens Restante"
+        name="Itens Faltantes"
       >
         {() => (
           <>
@@ -195,7 +188,7 @@ export default function TabRoutes({
                   fontFamily: 'Roboto_700Bold',
                   fontSize: 30
                 }}>
-                  Itens Restantes
+                  Itens Faltantes
                 </Text>
               </View>
               <View style={[styles.body, { backgroundColor: '#c4bbb5', }]}>
@@ -215,7 +208,6 @@ export default function TabRoutes({
                   clearAllItems={clearAllItems}
                   selectedItemId={selectedItemId}
                   removeItem={removeItem}
-                  total={total}
                 />
               </View>
               <View style={{

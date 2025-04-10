@@ -3,24 +3,21 @@ import { View, Text, StyleSheet } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 
 const formatar = (value) => {
-  return value.toLocaleString('pt-BR', {
+  return Number(value).toLocaleString('pt-BR', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
-  })
-}
+  });
+};
 
 const MyComponent = ({ total }) => {
   return (
     <View style={styles.container}>
-      <View style={[styles.textContainer, styles.shadowBox, { backgroundColor: total >= 600 ? 'red' : '#4de44d',
-        flexDirection: 'row'
-       }]}>
-        <Text style={{ color: '#fff', fontFamily: 'Roboto_700Bold', fontSize: 10, }}>
-          
-        </Text>
-        <Text style={{ color: '#fff', fontFamily: 'Roboto_700Bold', fontSize: 13, }}>
-        R$ {formatar(total)}
-        </Text>
+      <View style={[
+        styles.textContainer,
+        styles.shadowBox,
+        { backgroundColor: total >= 600 ? 'red' : '#4de44d' }
+      ]}>
+        <Text style={styles.totalText}>R$ {formatar(total)}</Text>
       </View>
       <View style={styles.iconContainer}>
         <MaterialIcons name="add" size={24} color="black" />
@@ -31,31 +28,34 @@ const MyComponent = ({ total }) => {
 
 const styles = StyleSheet.create({
   container: {
-    position: 'relative',
-    width: 80,
-    height: 50,
+    flexDirection: 'column',
+    alignItems: 'center',
+    bottom: 12
   },
   textContainer: {
-    position: 'absolute',
-    left: 50,
-    bottom: 25,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 15,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 15,
-    width: 60,
-    height: 25,
+    top: 12,
+    left: 40
+  },
+  totalText: {
+    color: '#fff',
+    fontFamily: 'Roboto_700Bold',
+    fontSize: 13,
   },
   iconContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: '100%',
-    height: '100%',
+    width: 30, // tamanho fixo pro botão
+    height: 30,
   },
   shadowBox: {
-    width: 60,
-    height: 25,
-    borderRadius: 15,
     shadowColor: 'black',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
   },

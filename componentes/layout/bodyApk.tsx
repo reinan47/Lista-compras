@@ -38,7 +38,6 @@ interface ItensListaProps {
   items: { [key: string]: Item };
   toggleItemSelection: (itemId: string) => void;
   setCorView: (value: boolean) => void;
-  setSelectedLocal: (value: string) => void;
   setItems: (items: { [key: string]: Item }) => void;
   updateItem: (itemId: string, price: string, quantity: number) => void;
   setValorInputs: (inputs: { [key: string]: any }) => void;
@@ -58,6 +57,7 @@ interface ItensListaProps {
   valorChange: string;
   modalLocalVisible: boolean;
   setModalLocalVisible: (visible: boolean) => void;
+  getItensFiltradosEOrdenados;
 }
 
 
@@ -65,7 +65,6 @@ const ItensLista: React.FC<ItensListaProps> = ({
   items,
   toggleItemSelection,
   setCorView,
-  setSelectedLocal,
   setItems,
   updateItem,
   setValorInputs,
@@ -84,7 +83,8 @@ const ItensLista: React.FC<ItensListaProps> = ({
   setValorChange,
   valorChange,
   modalLocalVisible,
-  setModalLocalVisible
+  setModalLocalVisible,
+  getItensFiltradosEOrdenados
 }) => (
   <View style={{ paddingHorizontal: 16, maxHeight: 'auto', bottom: 0 }}>
     {Object.keys(items).length === 0 ? (
@@ -96,7 +96,7 @@ const ItensLista: React.FC<ItensListaProps> = ({
       <ScrollView
         keyboardShouldPersistTaps="handled"
       >
-        {Object.entries(items).map(([itemId, itemData]) => (
+        {getItensFiltradosEOrdenados().map(([itemId, itemData]) => ( 
           <View key={itemId} style={{ paddingBottom: 4 }}>
             <TouchableOpacity
               onPress={() => {
@@ -205,6 +205,8 @@ const ItensLista: React.FC<ItensListaProps> = ({
                           }
                           if (itemData.price === 0)
                             updateItem(itemId, '', itemData.quantity - 1);
+                          else if(valorChange === '')
+                            updateItem(itemId, formatar(itemData.price), itemData.quantity - 1);
                           else
                             updateItem(itemId, valorChange, itemData.quantity - 1);
                         }}
@@ -219,9 +221,11 @@ const ItensLista: React.FC<ItensListaProps> = ({
                       <TouchableOpacity
                         onPress={() => {
                           if (itemData.price === 0)
-                            updateItem(itemId, '', itemData.quantity + 1)
+                            updateItem(itemId, '', itemData.quantity + 1);
+                          else if(valorChange === '')
+                            updateItem(itemId, formatar(itemData.price), itemData.quantity + 1);
                           else
-                            updateItem(itemId, valorChange, itemData.quantity + 1)
+                            updateItem(itemId, valorChange, itemData.quantity + 1);
                         }}
                         style={styles.addIcon}
                         disabled={itemData.selected}

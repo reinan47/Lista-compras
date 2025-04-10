@@ -9,11 +9,8 @@ const Header = ({
   total,
   setMostrarFiltros,
   mostrarFiltros,
-  ordenarItensPorNome,
-  ordenarItensPorPrecoDesc,
-  ordenarItensPorPrecoAsc,
-  ordenarSelecionadosPorPrecoAsc,
-  ordenarNaoSelecionadosPorPrecoAsc
+  filtroAtivo,
+  setFiltroAtivo
 }) => {
   const inputRef = useRef(null);
 
@@ -50,8 +47,12 @@ const Header = ({
               setMostrarFiltros(prev => !prev);
             }}
           >
-            <View style={{ borderWidth: .5, borderRadius: 3 }}>
-              <MaterialIcons name='filter-list' size={25} />
+            <View style={{
+              borderWidth: .5, 
+              borderRadius: 3,
+              backgroundColor: `${mostrarFiltros ? '#215FFF' : 'transparent'}`
+            }}>
+              <MaterialIcons name='filter-list' size={25} color={`${mostrarFiltros ? '#efefef' : '#292929'}`} />
             </View>
           </TouchableOpacity>
           <View style={styles.progressBar}>
@@ -72,32 +73,78 @@ const Header = ({
           paddingBottom: 3,
           display: mostrarFiltros ? 'flex' : 'none'
         }}>
-          <TouchableOpacity style={[styles.filtterButton, { flexDirection: 'row', alignItems: 'center' }]}
-            onPress={ordenarItensPorNome}
+          <TouchableOpacity style={[styles.filtterButton, {
+            backgroundColor: `${filtroAtivo === null ? '#215FFF' : 'transparent'}`
+          }]}
+            onPress={() => {
+              setFiltroAtivo(null);
+            }}
           >
-            <Text style={styles.font}>A - Z</Text>
+            <Text style={[styles.font, {
+              color: `${filtroAtivo === null ? 'white' : 'black'}`
+            }]}>Padrão</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.filtterButton, { flexDirection: 'row', alignItems: 'center' }]}
-            onPress={ordenarItensPorPrecoDesc}
-          >
-            <MaterialIcons name='arrow-upward' style={{ color: 'black' }} />
-            <Text style={styles.font}> Preço</Text>
+          <TouchableOpacity style={[styles.filtterButton, {
+            flexDirection: 'row',
+            alignItems: 'center',
+            backgroundColor: `${filtroAtivo === 'A-Z' ? '#215FFF' : 'transparent'}`
+          }]}
+            onPress={() => {
+              setFiltroAtivo('A-Z');
+            }}>
+            <Text style={[styles.font, {
+              color: `${filtroAtivo === 'A-Z' ? 'white' : 'black'}`
+            }]}>A - Z</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.filtterButton, { flexDirection: 'row', alignItems: 'center' }]}
-            onPress={ordenarItensPorPrecoAsc}
+          <TouchableOpacity style={[styles.filtterButton, {
+            flexDirection: 'row',
+            alignItems: 'center',
+            backgroundColor: `${filtroAtivo === 'PrecoDesc' ? '#215FFF' : 'transparent'}`
+          }]}
+            onPress={() => {
+              setFiltroAtivo('PrecoDesc');
+            }}
           >
-            <MaterialIcons name='arrow-downward' style={{ color: 'black' }} />
-            <Text style={styles.font}> Preço</Text>
+            <MaterialIcons name='arrow-upward' style={{ color: `${filtroAtivo === 'PrecoDesc' ? 'white' : 'black'}` }} />
+            <Text style={[styles.font, {
+              color: `${filtroAtivo === 'PrecoDesc' ? 'white' : 'black'}`
+            }]}> Preço</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.filtterButton}
-            onPress={ordenarNaoSelecionadosPorPrecoAsc}
+          <TouchableOpacity style={[styles.filtterButton, {
+            flexDirection: 'row',
+            alignItems: 'center',
+            backgroundColor: `${filtroAtivo === 'PrecoAsc' ? '#215FFF' : 'transparent'}`
+          }]}
+            onPress={() => {
+              setFiltroAtivo('PrecoAsc');
+            }}
           >
-            <Text style={styles.font}>Restantes</Text>
+            <MaterialIcons name='arrow-downward' style={{ color: `${filtroAtivo === 'PrecoAsc' ? 'white' : 'black'}` }} />
+            <Text style={[styles.font, {
+              color: `${filtroAtivo === 'PrecoAsc' ? 'white' : 'black'}`
+            }]}> Preço</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.filtterButton}
-            onPress={ordenarSelecionadosPorPrecoAsc}
+          <TouchableOpacity style={[styles.filtterButton, {
+            backgroundColor: `${filtroAtivo === 'Faltantes' ? '#215FFF' : 'transparent'}`
+          }]}
+            onPress={() => {
+              setFiltroAtivo('Faltantes');
+            }}
           >
-            <Text style={styles.font}>Comprados</Text>
+            <Text style={[styles.font, {
+              color: `${filtroAtivo === 'Faltantes' ? 'white' : 'black'}`
+            }]}>Faltantes</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.filtterButton, {
+            backgroundColor: `${filtroAtivo === 'Comprados' ? '#215FFF' : 'transparent'}`
+          }]}
+            onPress={() => {
+              setFiltroAtivo('Comprados');
+            }}
+          >
+            <Text style={[styles.font, {
+              color: `${filtroAtivo === 'Comprados' ? 'white' : 'black'}`
+            }]}>Comprados</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -125,8 +172,7 @@ const styles = StyleSheet.create({
   },
   font: {
     fontFamily: 'Roboto_400Regular',
-    fontSize: 15,
-    color: 'black'
+    fontSize: 13,
   },
   inputContainer: {
     flexDirection: 'row',

@@ -1,6 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, SafeAreaView, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, FlatList, SafeAreaView, ScrollView, } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+
+import { LinearGradient } from 'expo-linear-gradient';
 
 interface Item {
     name: string;
@@ -11,9 +13,9 @@ interface Item {
     local: string;
 }
 const formatar = (value) => {
-    return value.toLocaleString('pt-BR', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
+    return Number(value).toLocaleString('pt-BR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
     });
 };
 
@@ -33,12 +35,10 @@ interface ItensListaProps {
     clearAllItems: () => void;
     selectedItemId: string;
     removeItem: () => void;
-    total: number;
 }
 
 const ItensLista: React.FC<ItensListaProps> = ({
     items,
-    total
 }) => {
     return (
         <View style={{ paddingHorizontal: 5, }}>
@@ -52,11 +52,17 @@ const ItensLista: React.FC<ItensListaProps> = ({
                 <FlatList
                     data={Object.entries(items)}
                     ListHeaderComponent={() => (
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 15 }}>
-                            <Text style={[styles.columnProduto, styles.font]}>PRODUTO</Text>
-                            <Text style={[styles.columnUnd, styles.font]}>UND</Text>
-                            <Text style={[styles.columnValorUnd, styles.font]}>VALOR UND</Text>
-                            <Text style={[styles.columnTotal, styles.font]}>TOTAL</Text>
+                        <View>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 5 }}>
+                                <Text style={[styles.columnProduto, styles.font]}>ITEM</Text>
+                                <Text style={[styles.columnUnd, styles.font]}>QTD</Text>
+                                <Text style={[styles.columnValorUnd, styles.font]}>VALOR UND</Text>
+                                <Text style={[styles.columnTotal, styles.font]}>TOTAL</Text>
+                            </View>
+                            <LinearGradient
+                                colors={['black', 'black']}
+                                style={{ height: 1.2 }}
+                            />
                         </View>
                     )}
                     renderItem={({ item }) => {
@@ -74,10 +80,14 @@ const ItensLista: React.FC<ItensListaProps> = ({
                                                 <Text style={[styles.textData, styles.columnValorUnd, styles.font]}>R$ {formatar(itemData.price)}</Text>
                                                 <Text style={[styles.textData, styles.columnTotal, styles.font]}>R$ {formatar(itemData.total)}</Text>
                                             </View>
+                                            <LinearGradient
+                                                colors={['black', 'black']}
+                                                style={{ height: 1.2 }}
+                                            />
                                         </SafeAreaView>
                                     </ScrollView>
                                 </View>
-                            : null
+                                : null
                         );
 
                     }}

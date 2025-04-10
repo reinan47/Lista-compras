@@ -33,6 +33,7 @@ const App = () => {
   const [valorChange, setValorChange] = useState<string>('');
   const [modalLocalVisible, setModalLocalVisible] = useState(false);
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
+  const [filtroAtivo, setFiltroAtivo] = useState<'A-Z' | 'PrecoAsc' | 'PrecoDesc' | 'Comprados' | 'Faltantes' | null>(null);
 
   useEffect(() => {
     const tamanhoLista = Object.keys(items).length;
@@ -50,7 +51,7 @@ const App = () => {
           const item = parsedItems[key];
           acc[key] = {
             ...item,
-            price: item.price.toString().replace('.', ','),
+            price: item.price.toString().replace(',', '.'),
           };
           return acc;
         }, {} as { [key: string]: Item });
@@ -66,87 +67,27 @@ const App = () => {
 
     calculateSafeArea();
   }, []);
-
-
-  const ordenarItensPorNome = () => {
-    const sortedEntries = Object.entries(items).sort(([, a], [, b]) => {
-      const nameA = a.name.toUpperCase();
-      const nameB = b.name.toUpperCase();
-      if (nameA < nameB) return -1;
-      if (nameA > nameB) return 1;
+  
+  const getItensFiltradosEOrdenados = () => {
+    let lista = Object.entries(items);
+  
+    // Filtro por selecionado
+    if (filtroAtivo === 'Comprados') {
+      lista = lista.filter(([, item]) => item.selected);
+    } else if (filtroAtivo === 'Faltantes') {
+      lista = lista.filter(([, item]) => !item.selected);
+    }
+  
+    // Ordenação
+    lista = lista.sort(([, a], [, b]) => {
+      if (filtroAtivo === 'PrecoAsc') return Number(a.price.toString().replace(',', '.')) - Number(b.price.toString().replace(',', '.'))
+      if (filtroAtivo === 'PrecoDesc') return Number(b.price.toString().replace(',', '.')) - Number(a.price.toString().replace(',', '.'));
+      if (filtroAtivo === 'A-Z') return a.name.localeCompare(b.name);
       return 0;
     });
-  
-    const sortedItems = sortedEntries.reduce((acc, [key, item]) => {
-      acc[key] = item;
-      return acc;
-    }, {} as { [key: string]: Item });
-  
-    if (JSON.stringify(sortedItems) !== JSON.stringify(items)) {
-      setItems(sortedItems);
-    }
-  };  
-
-  const ordenarItensPorPrecoDesc = () => {
-    const sortedEntries = Object.entries(items).sort(([, a], [, b]) => {
-      return Number(b.price) - Number(a.price);
-    });
-  
-    const sortedItems = sortedEntries.reduce((acc, [key, item]) => {
-      acc[key] = item;
-      return acc;
-    }, {} as { [key: string]: Item });
-  
-    setItems(sortedItems);
-  };  
-
-  const ordenarItensPorPrecoAsc = () => {
-    const sortedEntries = Object.entries(items).sort(([, a], [, b]) => {
-      return Number(a.price) - Number(b.price);
-    });
-  
-    const sortedItems = sortedEntries.reduce((acc, [key, item]) => {
-      acc[key] = item;
-      return acc;
-    }, {} as { [key: string]: Item });
-  
-    setItems(sortedItems);
-  };  
-  const ordenarSelecionadosPorPrecoAsc = () => {
-    const selectedEntries = Object.entries(items)
-      .filter(([, item]) => item.selected)
-      .sort(([, a], [, b]) => Number(a.total) - Number(b.total));
-  
-    const unselectedEntries = Object.entries(items)
-      .filter(([, item]) => !item.selected);
-  
-    const combinedEntries = [...selectedEntries, ...unselectedEntries];
-  
-    const reorderedItems = combinedEntries.reduce((acc, [key, item]) => {
-      acc[key] = item;
-      return acc;
-    }, {} as { [key: string]: Item });
-  
-    setItems(reorderedItems);
+    return lista;
   };
-
-  const ordenarNaoSelecionadosPorPrecoAsc = () => {
-    const unselectedEntries = Object.entries(items)
-      .filter(([, item]) => !item.selected)
-      .sort(([, a], [, b]) => Number(a.total) - Number(b.total)); // não selecionados ordenados
   
-    const selectedEntries = Object.entries(items)
-      .filter(([, item]) => item.selected); // selecionados mantêm ordem atual
-  
-    const combinedEntries = [...unselectedEntries, ...selectedEntries];
-  
-    const reorderedItems = combinedEntries.reduce((acc, [key, item]) => {
-      acc[key] = item;
-      return acc;
-    }, {} as { [key: string]: Item });
-  
-    setItems(reorderedItems);
-  };  
 
   useEffect(() => {
     // Calcular o total sempre que houver mudanças nos itens
@@ -281,11 +222,9 @@ const App = () => {
             setModalLocalVisible={setModalLocalVisible}
             mostrarFiltros={mostrarFiltros}
             setMostrarFiltros={setMostrarFiltros}
-            ordenarItensPorNome={ordenarItensPorNome}
-            ordenarItensPorPrecoDesc={ordenarItensPorPrecoDesc}
-            ordenarItensPorPrecoAsc={ordenarItensPorPrecoAsc}
-            ordenarSelecionadosPorPrecoAsc={ordenarSelecionadosPorPrecoAsc}
-            ordenarNaoSelecionadosPorPrecoAsc={ordenarNaoSelecionadosPorPrecoAsc}
+            filtroAtivo={filtroAtivo}
+            setFiltroAtivo={setFiltroAtivo}
+            getItensFiltradosEOrdenados={getItensFiltradosEOrdenados}
           />
         </NavigationContainer>
       </View>
